@@ -62,12 +62,12 @@ export default function CredentialsPage() {
         <div className="space-y-8 pb-10 max-w-5xl mx-auto">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Credentials Management</h1>
-                    <p className="text-slate-500">View your active integrations and manageable accounts.</p>
+                    <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: 'var(--ls-heading)', color: 'var(--label-primary)' }}>Credentials Management</h1>
+                    <p style={{ fontSize: 13, color: 'var(--label-secondary)', marginTop: 2 }}>View your active integrations and manageable accounts.</p>
                 </div>
             </div>
 
-            <div className="grid gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
                 {/* Email Section */}
                 <CredentialSection
                     title="Email Integration"
@@ -110,22 +110,23 @@ export default function CredentialsPage() {
                     icon={Phone}
                     iconColor="text-cyan-600"
                     iconBg="bg-cyan-50"
+                    className="md:col-span-2"
                 >
                     <div className="grid gap-8 md:grid-cols-3">
                         {/* UK Section */}
-                        <div className="space-y-4 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                        <div className="space-y-4 bg-[var(--fill-quaternary)] p-4 rounded-xl border border-[var(--glass-border)]">
                             <ReadOnlyField label="Twilio (UK)" value="+44 (7462) 179309" />
                             <ReadOnlyField label="Agent ID" value="918c25eb-9882-452e-86df-b4851d464852" />
                         </div>
 
                         {/* US Section */}
-                        <div className="space-y-4 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                        <div className="space-y-4 bg-[var(--fill-quaternary)] p-4 rounded-xl border border-[var(--glass-border)]">
                             <ReadOnlyField label="Twilio (US)" value="+1 (478) 215 9151" />
                             <ReadOnlyField label="Agent ID" value="b35e3032-7865-4913-ba22-a913b5d4117b" />
                         </div>
 
                         {/* UAE Section */}
-                        <div className="space-y-4 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                        <div className="space-y-4 bg-[var(--fill-quaternary)] p-4 rounded-xl border border-[var(--glass-border)]">
                             <ReadOnlyField label="Maqsam (UAE)" value="+97148714150" />
                             <ReadOnlyField label="Agent ID" value="70f05e16-18f3-4f6e-964a-f47b299c6c1d" />
                         </div>
@@ -154,13 +155,13 @@ export default function CredentialsPage() {
                 >
                     <div className="grid gap-6">
                         {/* Vapi Details */}
-                        <div className="bg-blue-50/50 rounded-lg p-5 border border-blue-100 flex flex-col gap-4">
-                            <div className="flex flex-col text-center bg-white p-8 rounded-lg border border-blue-100 shadow-sm">
-                                <span className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">Vapi Credits Used</span>
-                                <span className="text-5xl font-black text-blue-600">
+                        <div className="bg-[var(--fill-quaternary)] rounded-lg p-5 border border-[var(--glass-border)] flex flex-col gap-4">
+                            <div className="flex flex-col text-center bg-[var(--fill-secondary)] p-8 rounded-lg border border-[var(--glass-border)] shadow-sm">
+                                <span className="text-sm font-bold text-[var(--label-tertiary)] uppercase tracking-[0.2em] mb-2">Vapi Credits Used</span>
+                                <span className="text-5xl font-black text-[var(--blue)]">
                                     ${vapiAgentUsed.toFixed(2)}
                                 </span>
-                                <p className="text-[10px] text-blue-500 mt-4 font-semibold bg-blue-50 px-3 py-1 rounded-full self-center border border-blue-100 italic">
+                                <p className="text-[10px] text-[var(--blue)] mt-4 font-semibold bg-[var(--blue)]/10 px-3 py-1 rounded-full self-center border border-[var(--blue)]/20 italic">
                                     Total Lifetime Consumption
                                 </p>
                             </div>
@@ -192,6 +193,7 @@ export default function CredentialsPage() {
                     icon={Smartphone}
                     iconColor="text-rose-600"
                     iconBg="bg-rose-50"
+                    className="md:col-span-2"
                     action={
                         <Button className="bg-rose-600 hover:bg-rose-700 text-white gap-2" onClick={() => window.open('https://console.twilio.com', '_blank')}>
                             <ExternalLink className="h-4 w-4" />
@@ -200,18 +202,18 @@ export default function CredentialsPage() {
                     }
                 >
                     <div className="space-y-4">
-                        <div className="bg-rose-50/50 rounded-lg p-4 border border-rose-100 flex items-center justify-between shadow-sm">
+                        <div className="bg-[var(--fill-quaternary)] rounded-lg p-4 border border-[var(--glass-border)] flex items-center justify-between shadow-sm">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-white rounded-md border border-rose-200">
+                                <div className="p-2 bg-[var(--fill-secondary)] rounded-md border border-[var(--glass-border)]">
                                     <Smartphone className="h-5 w-5 text-rose-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-bold text-slate-900">Twilio Account</p>
-                                    <p className="text-xs text-slate-500 font-mono">{twilioBalance?.account_sid || '---'}</p>
+                                    <p className="text-sm font-bold text-[var(--label-primary)]">Twilio Account</p>
+                                    <p className="text-xs text-[var(--label-tertiary)] font-mono">{twilioBalance?.account_sid || '---'}</p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Available Balance</p>
+                                <p className="text-xs text-[var(--label-tertiary)] uppercase font-bold tracking-wider">Available Balance</p>
                                 <p className="text-2xl font-black text-rose-600">
                                     {twilioBalance?.balance !== undefined ? `$${twilioBalance.balance.toFixed(2)}` : '---'}
                                 </p>
@@ -219,15 +221,15 @@ export default function CredentialsPage() {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-white p-4 rounded-lg border border-slate-100 text-center shadow-sm">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Recharge (PAYG)</p>
-                                <p className="text-lg font-bold text-slate-800">
+                            <div className="bg-[var(--fill-secondary)] p-4 rounded-lg border border-[var(--glass-border)] text-center shadow-sm">
+                                <p className="text-[10px] font-bold text-[var(--label-tertiary)] uppercase tracking-widest">Total Recharge (PAYG)</p>
+                                <p className="text-lg font-bold text-[var(--label-primary)]">
                                     {twilioBalance?.total_recharge !== undefined ? `$${twilioBalance.total_recharge.toFixed(2)}` : '---'}
                                 </p>
                             </div>
-                            <div className="bg-white p-4 rounded-lg border border-slate-100 text-center shadow-sm">
-                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Used</p>
-                                <p className="text-lg font-bold text-slate-600">
+                            <div className="bg-[var(--fill-secondary)] p-4 rounded-lg border border-[var(--glass-border)] text-center shadow-sm">
+                                <p className="text-[10px] font-bold text-[var(--label-tertiary)] uppercase tracking-widest">Used</p>
+                                <p className="text-lg font-bold text-[var(--label-secondary)]">
                                     {twilioBalance?.used !== undefined ? `$${twilioBalance.used.toFixed(2)}` : '---'}
                                 </p>
                             </div>
@@ -239,27 +241,27 @@ export default function CredentialsPage() {
     );
 }
 
-function CredentialSection({ title, description, icon: Icon, iconColor, iconBg, children, action }: any) {
+function CredentialSection({ title, description, icon: Icon, iconColor, iconBg, children, action, className }: any) {
     return (
-        <Card className="border-slate-200 shadow-sm bg-white overflow-hidden">
-            <CardHeader className="border-b border-slate-50 bg-slate-50/30 pb-4">
+        <div className={`liquid-card overflow-hidden ${className || ""}`} style={{ padding: 0 }}>
+            <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--separator)', background: 'var(--fill-quaternary)' }}>
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-4">
                         <div className={`p-3 rounded-xl ${iconBg} ${iconColor}`}>
                             <Icon className="h-6 w-6" />
                         </div>
                         <div>
-                            <CardTitle className="text-lg font-bold text-slate-900">{title}</CardTitle>
-                            <CardDescription className="mt-1">{description}</CardDescription>
+                            <h2 style={{ fontSize: 16, fontWeight: 600, color: 'var(--label-primary)' }}>{title}</h2>
+                            <p style={{ fontSize: 12, color: 'var(--label-secondary)', marginTop: 2 }}>{description}</p>
                         </div>
                     </div>
                     {action && <div>{action}</div>}
                 </div>
-            </CardHeader>
-            <CardContent className="p-6">
+            </div>
+            <div style={{ padding: 24 }}>
                 {children}
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }
 
@@ -273,22 +275,22 @@ function ReadOnlyField({ label, value, isPassword }: { label: string, value: str
 
     return (
         <div className="space-y-2">
-            <Label className="text-xs font-bold text-slate-400 uppercase tracking-wider">{label}</Label>
+            <Label className="text-xs font-bold text-[var(--label-tertiary)] uppercase tracking-wider">{label}</Label>
             <div className="relative group">
-                <div className="flex items-center w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 shadow-sm">
+                <div className="flex items-center w-full rounded-md border border-[var(--glass-border)] bg-[var(--fill-tertiary)] px-3 py-2 text-sm text-[var(--label-primary)] shadow-sm">
                     <span className={`flex-1 truncate ${isPassword && !show ? 'font-mono tracking-widest' : 'font-sans'}`}>
                         {displayValue}
                     </span>
                     <div className="flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         {isPassword && (
-                            <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-slate-600" onClick={() => setShow(!show)}>
+                            <Button variant="ghost" size="icon" className="h-6 w-6 text-[var(--label-secondary)] hover:text-[var(--label-primary)]" onClick={() => setShow(!show)}>
                                 {show ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                             </Button>
                         )}
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-6 w-6 text-slate-400 hover:text-slate-600"
+                            className="h-6 w-6 text-[var(--label-secondary)] hover:text-[var(--label-primary)]"
                             onClick={() => navigator.clipboard.writeText(value)}
                         >
                             <Copy className="h-3 w-3" />

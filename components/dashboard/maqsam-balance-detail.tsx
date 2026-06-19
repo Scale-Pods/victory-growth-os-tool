@@ -52,35 +52,27 @@ export function MaqsamBalanceDetail({ initialBalance }: { initialBalance?: any }
     }, [calls]);
 
     return (
-        <div className="space-y-6">
-            <div className="bg-white rounded-2xl p-8 border border-cyan-100 shadow-sm relative overflow-hidden text-center">
-                <div className="flex flex-col items-center">
-                    <div className="p-3 bg-cyan-50 rounded-full text-cyan-600 mb-4">
-                        <Wallet className="h-6 w-6" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-2">
-                        Total Lifetime Consumption (USD)
+        <div className="space-y-4">
+            <div className="bg-[var(--fill-quaternary)] rounded-lg p-5 border border-[var(--glass-border)] flex flex-col gap-4">
+                <div className="flex flex-col text-center bg-[var(--fill-secondary)] p-8 rounded-lg border border-[var(--glass-border)] shadow-sm">
+                    <span className="text-sm font-bold text-[var(--label-tertiary)] uppercase tracking-[0.2em] mb-2">Maqsam Credits Used</span>
+                    <span className="text-5xl font-black text-cyan-500">
+                        ${stats.cost.toFixed(2)}
                     </span>
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-2xl font-bold text-cyan-600">$</span>
-                        <span className="text-6xl font-black tracking-tighter text-slate-900">
-                            {stats.cost.toFixed(2)}
-                        </span>
-                    </div>
-
+                    <p className="text-[10px] text-cyan-500 mt-4 font-semibold bg-cyan-500/10 px-3 py-1 rounded-full self-center border border-cyan-500/20 italic">
+                        Total Lifetime Consumption
+                    </p>
                 </div>
             </div>
 
             <Button
-                className="w-full h-12 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl font-bold gap-2 shadow-lg shadow-cyan-100 transition-all active:scale-[0.98]"
+                className="w-full h-11 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-bold gap-2 shadow-none border border-cyan-500/30 transition-all active:scale-[0.98]"
                 onClick={() => window.open('https://portal.maqsam.com', '_blank')}
             >
                 <CreditCard className="h-4 w-4" />
                 Add Funds to Maqsam
                 <ExternalLink className="h-3 w-3 opacity-50" />
             </Button>
-
-
 
             {loadingCalls && (
                 <p className="text-center text-xs text-slate-400 animate-pulse">Syncing lifetime logs...</p>
