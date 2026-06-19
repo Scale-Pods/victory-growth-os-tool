@@ -7,7 +7,7 @@ import {
     LayoutDashboard, Mail, MessageCircle, Mic, Settings,
     LogOut, ChevronDown, Wallet, BarChart2, Users, Send,
     Key, ExternalLink, Sun, Moon, Inbox, AlertCircle, UserMinus,
-    MessageSquare, Phone, Activity
+    MessageSquare, Phone, Activity, Globe
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -23,6 +23,7 @@ const dashboardConfig: Record<string, { label: string; color: string; icon: any;
         items: [
             { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
             { title: "Leads", href: "/dashboard/leads", icon: Users },
+            { title: "Scrapers", href: "/dashboard/scrappers", icon: Globe },
             { title: "Credentials", href: "/dashboard/credentials", icon: Key },
         ],
     },
