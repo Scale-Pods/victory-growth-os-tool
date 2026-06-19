@@ -181,31 +181,46 @@ export default function WhatsappDashboardPage() {
                 <DateRangePicker onUpdate={range => setDateRange(range.range)} />
             </div>
 
-            {/* Normal Lead Metric Tiles */}
-            <div className="metric-grid">
-                <MetricTile
-                    title="Unique Msg Sent"
-                    value={loading ? '—' : stats.uniqueSentCount.toLocaleString()}
-                    accentColor="var(--purple)"
-                    icon={<Users size={17} />}
-                    onClick={() => router.push('/dashboard/whatsapp/leads')}
-                />
-                <MetricTile
-                    title="Total Replies"
-                    value={loading ? '—' : stats.totalReplies.toLocaleString()}
-                    accentColor="var(--green)"
-                    icon={<MessageCircle size={17} />}
-                    info="Derived from 'WP_Replied_track' column. Select 'Last 3 Months' for full history."
-                />
-                <MetricTile
-                    title="Messages Sent"
-                    value={loading ? '—' : stats.sentCount.toLocaleString()}
-                    accentColor="var(--blue)"
-                    icon={<Send size={17} />}
-                />
+            {/* CRM Leads Section */}
+            <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                    <div style={{
+                        width: 30, height: 30, borderRadius: 8,
+                        background: 'rgba(16,185,129,0.12)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--green)',
+                    }}>
+                        <Users size={14} />
+                    </div>
+                    <h2 style={{ fontSize: 15, fontWeight: 600, letterSpacing: '-0.022em', color: 'var(--label-primary)' }}>
+                        CRM Leads
+                    </h2>
+                </div>
+                <div className="metric-grid">
+                    <MetricTile
+                        title="Unique Msg Sent (CRM)"
+                        value={loading ? '—' : stats.uniqueSentCount.toLocaleString()}
+                        accentColor="var(--purple)"
+                        icon={<Users size={17} />}
+                        onClick={() => router.push('/dashboard/whatsapp/leads')}
+                    />
+                    <MetricTile
+                        title="Total Replies (CRM)"
+                        value={loading ? '—' : stats.totalReplies.toLocaleString()}
+                        accentColor="var(--green)"
+                        icon={<MessageCircle size={17} />}
+                        info="Derived from 'WP_Replied_track' column. Select 'Last 3 Months' for full history."
+                    />
+                    <MetricTile
+                        title="Messages Sent (CRM)"
+                        value={loading ? '—' : stats.sentCount.toLocaleString()}
+                        accentColor="var(--blue)"
+                        icon={<Send size={17} />}
+                    />
+                </div>
             </div>
 
-            {/* Owner Metric Tiles */}
+            {/* Generated Leads Section */}
             <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
                     <div style={{
@@ -217,25 +232,25 @@ export default function WhatsappDashboardPage() {
                         <Building2 size={14} />
                     </div>
                     <h2 style={{ fontSize: 15, fontWeight: 600, letterSpacing: '-0.022em', color: 'var(--label-primary)' }}>
-                        Owner Metrics
+                        Generated Leads
                     </h2>
                 </div>
                 <div className="metric-grid">
                     <MetricTile
-                        title="Owner Reachouts"
+                        title="Generated Leads Outreach"
                         value={loading ? '—' : stats.ownerReachouts.toLocaleString()}
                         accentColor="var(--orange)"
                         icon={<Building2 size={17} />}
-                        onClick={() => router.push('/dashboard/whatsapp/chat?tab=owners')}
+                        onClick={() => router.push('/dashboard/whatsapp/chat?tab=generated')}
                     />
                     <MetricTile
-                        title="Owner Replies"
+                        title="Generated Replies"
                         value={loading ? '—' : stats.ownerReplies.toLocaleString()}
                         accentColor="var(--green)"
                         icon={<MessageSquare size={17} />}
                     />
                     <MetricTile
-                        title="Owner Messages"
+                        title="Generated Messages"
                         value={loading ? '—' : stats.ownerSent.toLocaleString()}
                         accentColor="var(--orange)"
                         icon={<Send size={17} />}

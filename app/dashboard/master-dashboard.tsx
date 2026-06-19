@@ -25,21 +25,18 @@ import { MaqsamBalanceDetail } from "@/components/dashboard/maqsam-balance-detai
 
 /* ── Wallet Modal ── */
 function WalletModal({ isOpen, onClose, type, details, calls }: any) {
-    const { voiceBalance } = useData();
     const vapiAgentUsed = useMemo(() => {
         if (!calls || !Array.isArray(calls)) return 0;
         return calls.filter((c: any) => c.source === 'vapi').reduce((acc: number, call: any) => acc + (call.breakdown?.agent || 0), 0);
     }, [calls]);
 
-    const elDetails = voiceBalance?.elevenlabs || (voiceBalance?.character_limit ? voiceBalance : null);
-
     const titles: Record<string, string> = {
-        vapi: 'Vapi Wallet', elevenlabs: 'ElevenLabs Credits',
+        vapi: 'Vapi Wallet',
         maqsam: 'Maqsam Telephony', twilio: 'Twilio Account',
     };
 
     const accentColors: Record<string, string> = {
-        vapi: '#0A84FF', elevenlabs: '#FF9F0A', maqsam: '#40CBE0', twilio: '#FF453A',
+        vapi: '#0A84FF', maqsam: '#40CBE0', twilio: '#FF453A',
     };
     const accent = accentColors[type] || '#0A84FF';
 
@@ -67,21 +64,6 @@ function WalletModal({ isOpen, onClose, type, details, calls }: any) {
                                 </div>
                                 <div style={{ fontSize: 44, fontWeight: 300, letterSpacing: '-0.03em', color: accent, fontVariantNumeric: 'tabular-nums' }}>
                                     ${vapiAgentUsed.toFixed(2)}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                    {type === 'elevenlabs' && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                            <div style={{
-                                background: `${accent}0F`, borderRadius: 16, padding: '24px',
-                                textAlign: 'center', outline: `1px solid ${accent}22`, outlineOffset: -1,
-                            }}>
-                                <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--label-tertiary)', marginBottom: 8 }}>
-                                    Characters Remaining
-                                </div>
-                                <div style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.03em', color: accent, fontVariantNumeric: 'tabular-nums' }}>
-                                    {elDetails ? ((elDetails.character_limit - elDetails.character_count) || 0).toLocaleString() : '—'}
                                 </div>
                             </div>
                         </div>
@@ -214,7 +196,7 @@ export default function MasterDashboard() {
         from: subDays(new Date(), 7),
         to: new Date(),
     });
-    const [walletModal, setWalletModal] = useState<{ isOpen: boolean; type: 'vapi' | 'elevenlabs' | 'maqsam' | 'twilio' }>({
+    const [walletModal, setWalletModal] = useState<{ isOpen: boolean; type: 'vapi' | 'maqsam' | 'twilio' }>({
         isOpen: false, type: 'vapi',
     });
 
@@ -222,7 +204,6 @@ export default function MasterDashboard() {
     
     const walletChips = [
         { type: 'vapi' as const, icon: <Mic size={13} />, color: '#0A84FF' },
-        { type: 'elevenlabs' as const, icon: <LayoutDashboard size={13} />, color: '#FF9F0A' },
         { type: 'twilio' as const, icon: <MessageCircle size={13} />, color: '#FF453A' },
         { type: 'maqsam' as const, icon: <Wallet size={13} />, color: '#40CBE0' },
     ];
@@ -284,6 +265,18 @@ export default function MasterDashboard() {
     const totalWaReachouts = waUniqueSent ?? m?.totalWaReachouts ?? 0;
     const replyRate = totalWaReachouts > 0 ? ((totalWaReplies / totalWaReachouts) * 100).toFixed(1) : '0';
 
+    const totalLeadsCRM = Math.max(0, (m?.totalLeads ?? 0) - (m?.totalOwnerLeads ?? 0));
+    const totalWaReachoutsCRM = Math.max(0, totalWaReachouts - (m?.ownerWaReachouts ?? 0));
+    const totalWaRepliesCRM = Math.max(0, totalWaReplies - (m?.ownerWaReplies ?? 0));
+    const replyRateCRM = totalWaReachoutsCRM > 0 ? ((totalWaRepliesCRM / totalWaReachoutsCRM) * 100).toFixed(1) : '0';
+    const totalVoiceCallsCRM = Math.max(0, (m?.totalVoiceCalls ?? 0) - (m?.ownerVoiceCalls ?? 0));
+
+    const totalLeadsGen = m?.totalOwnerLeads ?? 0;
+    const totalWaReachoutsGen = m?.ownerWaReachouts ?? 0;
+    const totalWaRepliesGen = m?.ownerWaReplies ?? 0;
+    const replyRateGen = totalWaReachoutsGen > 0 ? ((totalWaRepliesGen / totalWaReachoutsGen) * 100).toFixed(1) : '0';
+    const totalVoiceCallsGen = m?.ownerVoiceCalls ?? 0;
+
     const serviceDistribution = [
         { name: 'Email', value: 0, color: 'var(--blue)' },
         { name: 'WhatsApp', value: totalWaReachouts, color: 'var(--green)' },
@@ -321,68 +314,135 @@ export default function MasterDashboard() {
                 </div>
             </div>
 
-            {/* ── Primary Metric Tiles ── */}
-            <div className="metric-grid">
-                <MetricTile
-                    title="Total Leads"
-                    value={loading ? '—' : (m?.totalLeads ?? 0).toLocaleString()}
-                    trend={m?.oldestLeadDate ? `Since ${format(new Date(m.oldestLeadDate), 'MMM d')}` : 'All time'}
-                    trendDir="neutral"
-                    accentColor="var(--blue)"
-                    icon={<Users size={17} />}
-                    onClick={() => router.push('/dashboard/leads')}
-                />
-                <MetricTile
-                    title="Emails Sent"
-                    value="—"
-                    trend="Real-time"
-                    trendDir="neutral"
-                    accentColor="var(--green)"
-                    icon={<Mail size={17} />}
-                    onClick={() => router.push('/dashboard/email/sent')}
-                />
-                <MetricTile
-                    title="WhatsApp Reachouts"
-                    value={loading ? '—' : totalWaReachouts.toLocaleString()}
-                    trend="Real-time"
-                    trendDir="neutral"
-                    accentColor="var(--purple)"
-                    icon={<MessageCircle size={17} />}
-                    onClick={() => router.push('/dashboard/whatsapp/chat')}
-                />
-                <MetricTile
-                    title="Voice Calls"
-                    value={loading ? '—' : (m?.totalVoiceCalls ?? 0).toLocaleString()}
-                    trend="Real-time"
-                    trendDir="neutral"
-                    accentColor="var(--orange)"
-                    icon={<Activity size={17} />}
-                    onClick={() => router.push('/dashboard/voice')}
-                    info="Shows Normal calls containing US, UK, UAE, 1731 leads, and openhouse leads."
-                />
-                <MetricTile
-                    title="Total Replies"
-                    value={loading ? '—' : totalWaReplies.toLocaleString()}
-                    trend={`${replyRate}% reply rate`}
-                    trendDir="up"
-                    accentColor="var(--indigo)"
-                    icon={<Expand size={17} />}
-                    onClick={() => setIsRepliesModalOpen(true)}
-                    info="Reply rate = Total Replies ÷ Total WhatsApp Reachouts. Select 'Last 3 Months' for full history."
-                    action={
-                        <button
-                            style={{ background: 'none', border: 'none', cursor: 'default', padding: 4, color: 'var(--label-tertiary)', display: 'flex' }}
-                            onClick={e => { e.stopPropagation(); setIsRepliesExpanded(v => !v); }}
-                            onMouseEnter={e => (e.currentTarget.style.color = 'var(--label-primary)')}
-                            onMouseLeave={e => (e.currentTarget.style.color = 'var(--label-tertiary)')}
-                        >
-                            {isRepliesExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-                        </button>
-                    }
-                />
+            {/* ── Section 1: All Leads Data ── */}
+            <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                    <div style={{
+                        width: 32, height: 32, borderRadius: 9,
+                        background: 'rgba(0,122,255,0.14)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--blue)',
+                    }}>
+                        <LayoutDashboard size={16} />
+                    </div>
+                    <h2 style={{ fontSize: 17, fontWeight: 600, letterSpacing: '-0.022em', color: 'var(--label-primary)' }}>
+                        All Leads Data
+                    </h2>
+                </div>
+                <div className="metric-grid">
+                    <MetricTile
+                        title="Total Leads"
+                        value={loading ? '—' : (m?.totalLeads ?? 0).toLocaleString()}
+                        trend={m?.oldestLeadDate ? `Since ${format(new Date(m.oldestLeadDate), 'MMM d')}` : 'All time'}
+                        trendDir="neutral"
+                        accentColor="var(--blue)"
+                        icon={<Users size={17} />}
+                        onClick={() => router.push('/dashboard/leads')}
+                    />
+                    <MetricTile
+                        title="Emails Sent"
+                        value="—"
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="var(--green)"
+                        icon={<Mail size={17} />}
+                        onClick={() => router.push('/dashboard/email/sent')}
+                    />
+                    <MetricTile
+                        title="WhatsApp Reachouts"
+                        value={loading ? '—' : totalWaReachouts.toLocaleString()}
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="var(--purple)"
+                        icon={<MessageCircle size={17} />}
+                        onClick={() => router.push('/dashboard/whatsapp/chat')}
+                    />
+                    <MetricTile
+                        title="Voice Calls"
+                        value={loading ? '—' : (m?.totalVoiceCalls ?? 0).toLocaleString()}
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="var(--orange)"
+                        icon={<Activity size={17} />}
+                        onClick={() => router.push('/dashboard/voice')}
+                        info="Shows CRM Leads calls containing US, UK, UAE, 1731 leads, and openhouse leads."
+                    />
+                    <MetricTile
+                        title="Total Replies"
+                        value={loading ? '—' : totalWaReplies.toLocaleString()}
+                        trend={`${replyRate}% reply rate`}
+                        trendDir="up"
+                        accentColor="var(--indigo)"
+                        icon={<Expand size={17} />}
+                        onClick={() => setIsRepliesModalOpen(true)}
+                        info="Reply rate = Total Replies ÷ Total WhatsApp Reachouts. Select 'Last 3 Months' for full history."
+                        action={
+                            <button
+                                style={{ background: 'none', border: 'none', cursor: 'default', padding: 4, color: 'var(--label-tertiary)', display: 'flex' }}
+                                onClick={e => { e.stopPropagation(); setIsRepliesExpanded(v => !v); }}
+                                onMouseEnter={e => (e.currentTarget.style.color = 'var(--label-primary)')}
+                                onMouseLeave={e => (e.currentTarget.style.color = 'var(--label-tertiary)')}
+                            >
+                                {isRepliesExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+                            </button>
+                        }
+                    />
+                </div>
             </div>
 
-            {/* ── Owner Leads Section ── */}
+            {/* ── Section 2: CRM Leads ── */}
+            <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                    <div style={{
+                        width: 32, height: 32, borderRadius: 9,
+                        background: 'rgba(48,209,88,0.14)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--green)',
+                    }}>
+                        <Users size={16} />
+                    </div>
+                    <h2 style={{ fontSize: 17, fontWeight: 600, letterSpacing: '-0.022em', color: 'var(--label-primary)' }}>
+                        CRM Leads
+                    </h2>
+                </div>
+                <div className="metric-grid">
+                    <MetricTile
+                        title="Total CRM Leads"
+                        value={loading ? '—' : totalLeadsCRM.toLocaleString()}
+                        trend="All time"
+                        trendDir="neutral"
+                        accentColor="var(--green)"
+                        icon={<Users size={17} />}
+                        onClick={() => router.push('/dashboard/leads')}
+                    />
+                    <MetricTile
+                        title="WA Reachouts (CRM)"
+                        value={loading ? '—' : totalWaReachoutsCRM.toLocaleString()}
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="var(--purple)"
+                        icon={<MessageCircle size={17} />}
+                    />
+                    <MetricTile
+                        title="Voice Calls (CRM)"
+                        value={loading ? '—' : totalVoiceCallsCRM.toLocaleString()}
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="var(--orange)"
+                        icon={<Phone size={17} />}
+                    />
+                    <MetricTile
+                        title="Replies (CRM)"
+                        value={loading ? '—' : totalWaRepliesCRM.toLocaleString()}
+                        trend={`${replyRateCRM}% reply rate`}
+                        trendDir="up"
+                        accentColor="var(--indigo)"
+                        icon={<Expand size={17} />}
+                    />
+                </div>
+            </div>
+
+            {/* ── Section 3: Generated Leads Outreach ── */}
             <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
                     <div style={{
@@ -394,40 +454,40 @@ export default function MasterDashboard() {
                         <Users size={16} />
                     </div>
                     <h2 style={{ fontSize: 17, fontWeight: 600, letterSpacing: '-0.022em', color: 'var(--label-primary)' }}>
-                        Owner Leads
+                        Generated Leads Outreach
                     </h2>
                 </div>
                 <div className="metric-grid">
                     <MetricTile
-                        title="Total Owner Leads"
-                        value={loading ? '—' : (m?.totalOwnerLeads ?? 0).toLocaleString()}
+                        title="Total Generated Leads"
+                        value={loading ? '—' : totalLeadsGen.toLocaleString()}
                         trend="All time"
                         trendDir="neutral"
                         accentColor="var(--orange)"
                         icon={<Users size={17} />}
                     />
                     <MetricTile
-                        title="WA Reachouts (Owner)"
-                        value={loading ? '—' : (m?.ownerWaReachouts ?? 0).toLocaleString()}
+                        title="WA Reachouts (Generated)"
+                        value={loading ? '—' : totalWaReachoutsGen.toLocaleString()}
                         trend="Real-time"
                         trendDir="neutral"
                         accentColor="var(--green)"
                         icon={<MessageCircle size={17} />}
                     />
                     <MetricTile
-                        title="Voice Calls (Owner)"
-                        value={loading ? '—' : (m?.ownerVoiceCalls ?? 0).toLocaleString()}
+                        title="Voice Calls (Generated)"
+                        value={loading ? '—' : totalVoiceCallsGen.toLocaleString()}
                         trend="Real-time"
                         trendDir="neutral"
                         accentColor="var(--blue)"
                         icon={<Phone size={17} />}
-                        info="Derived from Vapi call logs for the 'owners' account."
+                        info="Derived from Vapi call logs for the generated leads account."
                     />
                     <MetricTile
-                        title="Replies (Owner)"
-                        value={loading ? '—' : (m?.ownerWaReplies ?? 0).toLocaleString()}
-                        trend="Real-time"
-                        trendDir="neutral"
+                        title="Replies (Generated)"
+                        value={loading ? '—' : totalWaRepliesGen.toLocaleString()}
+                        trend={`${replyRateGen}% reply rate`}
+                        trendDir="up"
                         accentColor="var(--purple)"
                         icon={<MessageCircle size={17} />}
                     />

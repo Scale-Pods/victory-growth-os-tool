@@ -334,7 +334,7 @@ export default function WhatsappChatPage() {
         } else if (selectedOwner) {
             const ownerId = selectedOwner.id || selectedOwner.contactNo || selectedOwner.Phone || selectedOwner.phone;
             url.searchParams.set('chat', ownerId);
-            url.searchParams.set('tab', 'owners');
+            url.searchParams.set('tab', 'generated');
         } else {
             url.searchParams.delete('chat');
             url.searchParams.delete('tab');
@@ -346,12 +346,12 @@ export default function WhatsappChatPage() {
     useEffect(() => {
         if (initialProcessed.current) return;
         
-        if (initialTab === 'owners') {
+        if (initialTab === 'owners' || initialTab === 'generated') {
             setActiveTab('owners');
         }
         
         if (initialSelectedId) {
-            if (initialTab === 'owners') {
+            if (initialTab === 'owners' || initialTab === 'generated') {
                 // Find in waOwners (already fetched)
                 if (waOwners.length > 0) {
                     const found = waOwners.find(o =>
@@ -704,7 +704,7 @@ export default function WhatsappChatPage() {
                                 boxShadow: activeTab === "leads" ? 'var(--shadow-sm)' : 'none',
                             }}
                         >
-                            <Users style={{ width: 13, height: 13 }} />Leads
+                            <Users style={{ width: 13, height: 13 }} />CRM Leads
                         </button>
                         <button
                             onClick={() => { setActiveTab("owners"); setCurrentPage(1); }}
@@ -717,7 +717,7 @@ export default function WhatsappChatPage() {
                                 boxShadow: activeTab === "owners" ? 'var(--shadow-sm)' : 'none',
                             }}
                         >
-                            <Building2 style={{ width: 13, height: 13 }} />Owners
+                            <Building2 style={{ width: 13, height: 13 }} />Generated Leads
                         </button>
                     </div>
                     <DateRangePicker onUpdate={(values) => setDateRange(values.range)} />
@@ -805,7 +805,7 @@ export default function WhatsappChatPage() {
                                         id="owner-whatsapp-1"
                                         label={
                                             <div className="flex flex-col">
-                                                <span className="text-[11px] font-bold">Owner Message #1</span>
+                                                <span className="text-[11px] font-bold">Generated Lead Message #1</span>
                                                 <span className="text-[9px] text-slate-400 font-mono uppercase">[Whatsapp_1]</span>
                                             </div>
                                         } 
@@ -862,7 +862,7 @@ export default function WhatsappChatPage() {
 
                     <div style={{ position: 'relative' }}>
                         <Search style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, color: 'var(--label-tertiary)' }} />
-                        <Input className="pl-10" style={{ background: 'var(--fill-tertiary)', border: '1px solid var(--glass-border)', color: 'var(--label-primary)', borderRadius: 'var(--radius-lg)' }} placeholder={`Search ${activeTab} by name or phone...`} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                        <Input className="pl-10" style={{ background: 'var(--fill-tertiary)', border: '1px solid var(--glass-border)', color: 'var(--label-primary)', borderRadius: 'var(--radius-lg)' }} placeholder={`Search ${activeTab === "leads" ? "CRM Leads" : "Generated Leads"} by name or phone...`} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                     </div>
 
                     <div className="liquid-card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -919,17 +919,17 @@ export default function WhatsappChatPage() {
                                 {loadingWA ? (
                                     <div style={{ padding: '40px 16px', textAlign: 'center', color: 'var(--label-tertiary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
                                         <RefreshCw style={{ width: 18, height: 18, color: 'var(--orange)' }} className="animate-spin" />
-                                        <span style={{ fontSize: 13 }}>Loading owner chats...</span>
+                                        <span style={{ fontSize: 13 }}>Loading generated leads chats...</span>
                                     </div>
                                 ) : filteredOwners.length === 0 ? (
-                                    <div style={{ padding: '40px 16px', textAlign: 'center', color: 'var(--label-tertiary)', fontSize: 13 }}>No owner chats found.</div>
+                                    <div style={{ padding: '40px 16px', textAlign: 'center', color: 'var(--label-tertiary)', fontSize: 13 }}>No generated leads chats found.</div>
                                 ) : (
                                     <TooltipProvider>
                                         <div className="overflow-x-auto">
                                             <table className="w-full text-left text-sm min-w-[650px]">
                                                 <thead style={{ borderBottom: '1px solid var(--hairline)' }}>
                                                     <tr style={{ background: 'var(--fill-quaternary)' }}>
-                                                        <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)' }}>Owner</th>
+                                                        <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)' }}>Generated Lead</th>
                                                         <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)', textAlign: 'center' }}>WTS Reply</th>
                                                         <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)', textAlign: 'center' }}>Status</th>
                                                         <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)', textAlign: 'center' }}>Messages</th>
@@ -990,7 +990,7 @@ export default function WhatsappChatPage() {
                         {totalPages > 1 && (
                             <div style={{ borderTop: '1px solid var(--hairline)', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--fill-quaternary)' }}>
                                 <div style={{ fontSize: 12, color: 'var(--label-tertiary)', fontWeight: 500 }}>
-                                    Showing <span style={{ color: 'var(--label-primary)', fontWeight: 700 }}>{(currentPage - 1) * leadsPerPage + 1}</span> – <span style={{ color: 'var(--label-primary)', fontWeight: 700 }}>{Math.min(currentPage * leadsPerPage, (activeTab === "leads" ? filteredLeads.length : filteredOwners.length))}</span> of <span style={{ color: 'var(--label-primary)', fontWeight: 700 }}>{(activeTab === "leads" ? filteredLeads.length : filteredOwners.length)}</span> {activeTab}
+                                    Showing <span style={{ color: 'var(--label-primary)', fontWeight: 700 }}>{(currentPage - 1) * leadsPerPage + 1}</span> – <span style={{ color: 'var(--label-primary)', fontWeight: 700 }}>{Math.min(currentPage * leadsPerPage, (activeTab === "leads" ? filteredLeads.length : filteredOwners.length))}</span> of <span style={{ color: 'var(--label-primary)', fontWeight: 700 }}>{(activeTab === "leads" ? filteredLeads.length : filteredOwners.length)}</span> {activeTab === "leads" ? "CRM Leads" : "Generated Leads"}
                                 </div>
                                 <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
                                     <Button variant="outline" size="sm" className="h-7 w-7 p-0" disabled={currentPage === 1} onClick={() => setCurrentPage(prev => prev - 1)}>

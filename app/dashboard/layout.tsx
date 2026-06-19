@@ -80,9 +80,18 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const [dark, setDark] = useState(true);
     const [isHovered, setIsHovered] = useState(false);
-    const [walletModal, setWalletModal] = useState<{ isOpen: boolean; type: 'vapi' | 'elevenlabs' | 'maqsam' | 'twilio' }>({
+    const [walletModal, setWalletModal] = useState<{ isOpen: boolean; type: 'vapi' | 'maqsam' | 'twilio' }>({
         isOpen: false, type: 'vapi',
     });
+    const [isChannelDropdownOpen, setIsChannelDropdownOpen] = useState(false);
+
+    const isExpanded = isHovered;
+
+    useEffect(() => {
+        if (!isExpanded) {
+            setIsChannelDropdownOpen(false);
+        }
+    }, [isExpanded]);
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', dark);
@@ -92,7 +101,6 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
     const walletChips = [
         { type: 'vapi' as const, icon: <Mic size={13} />, color: '#0A84FF' },
-        { type: 'elevenlabs' as const, icon: <LayoutDashboard size={13} />, color: '#FF9F0A' },
         { type: 'twilio' as const, icon: <MessageCircle size={13} />, color: '#FF453A' },
         { type: 'maqsam' as const, icon: <Wallet size={13} />, color: '#40CBE0' },
     ];
@@ -122,8 +130,6 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         ? "Dashboard"
         : (activeConfig.items.find((item) => item.href === pathname)?.title || activeConfig.label);
 
-    const isExpanded = isHovered;
-
     return (
         <div className="flex h-screen overflow-hidden ambient-bg">
             
@@ -146,55 +152,110 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                 className="apple-sidebar"
             >
                 {/* Logo Area */}
-                <div style={{ height: 80, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: isExpanded ? 'flex-start' : 'center', transition: 'all 0.3s ease' }}>
-                    <div style={{ position: 'relative', width: isExpanded ? 140 : 40, height: 40, transition: 'width 0.3s ease', overflow: 'hidden' }}>
+                <div style={{ height: 90, padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}>
+                    <div style={{ position: 'relative', width: isExpanded ? 190 : 48, height: isExpanded ? 52 : 48, transition: 'all 0.3s ease', overflow: 'hidden' }}>
                         {isExpanded ? (
-                            <Image src="/VE-Logo-Color.svg" alt="Victory Energy" fill className="object-contain object-left" priority />
+                            <Image src="/VE-Logo-Color.svg" alt="Victory Energy" fill className="object-contain object-center" style={dark ? { filter: 'invert(1) hue-rotate(180deg) brightness(1.5)' } : undefined} priority />
                         ) : (
-                            <div className="w-10 h-10 rounded-xl bg-[var(--blue)]/10 text-[var(--blue)] flex items-center justify-center font-bold text-xl border border-[var(--blue)]/20">V</div>
+                            <div className="w-12 h-12 rounded-xl bg-[var(--blue)]/10 text-[var(--blue)] flex items-center justify-center font-bold text-2xl border border-[var(--blue)]/20">V</div>
                         )}
                     </div>
                 </div>
 
-                {/* 4 Main Apps (Center Spread) */}
-                <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {isExpanded && <div className="text-[10px] font-bold text-[var(--label-tertiary)] uppercase tracking-widest px-2 mb-1">Channels</div>}
-                    {mainApps.map(appKey => {
-                        const app = dashboardConfig[appKey];
-                        const isActive = currentContext === appKey;
-                        const Icon = app.icon;
-                        
-                        return (
-                            <Link 
-                                key={appKey} 
-                                href={appKey === 'master' ? '/dashboard' : `/dashboard/${appKey}`}
-                                style={{
-                                    display: 'flex', alignItems: 'center', gap: 12,
-                                    padding: '12px', borderRadius: '14px',
-                                    background: isActive ? `${app.color}15` : 'transparent',
-                                    color: isActive ? app.color : 'var(--label-secondary)',
-                                    border: isActive ? `1px solid ${app.color}30` : '1px solid transparent',
-                                    transition: 'all 0.2s ease',
-                                    textDecoration: 'none',
-                                    justifyContent: isExpanded ? 'flex-start' : 'center'
-                                }}
-                                className="hover:bg-[var(--fill-tertiary)]"
-                            >
-                                <Icon size={20} style={{ flexShrink: 0 }} />
-                                <span style={{ 
-                                    opacity: isExpanded ? 1 : 0, 
-                                    width: isExpanded ? 'auto' : 0, 
-                                    overflow: 'hidden', 
-                                    fontWeight: 600, 
-                                    fontSize: 14,
-                                    transition: 'opacity 0.3s ease, width 0.3s ease',
-                                    whiteSpace: 'nowrap'
-                                }}>
-                                    {app.label}
-                                </span>
-                            </Link>
-                        )
-                    })}
+                {/* Dropdown for Main Apps to Save Space */}
+                <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column' }}>
+                    {isExpanded ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                            <div className="text-[10px] font-bold text-[var(--label-tertiary)] uppercase tracking-widest px-2 mb-1">Channels</div>
+                            <div style={{ position: 'relative', width: '100%' }}>
+                                <button
+                                    onClick={() => setIsChannelDropdownOpen(!isChannelDropdownOpen)}
+                                    style={{
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        width: '100%', padding: '10px 12px', borderRadius: '12px',
+                                        background: 'var(--fill-secondary)',
+                                        border: '1px solid var(--glass-border)',
+                                        color: 'var(--label-primary)',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s ease',
+                                    }}
+                                    className="hover:bg-[var(--fill-tertiary)]"
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                                        {(() => {
+                                            const app = dashboardConfig[currentContext];
+                                            const Icon = app.icon;
+                                            return <Icon size={18} style={{ color: app.color, flexShrink: 0 }} />;
+                                        })()}
+                                        <span style={{ fontWeight: 600, fontSize: 13 }}>
+                                            {dashboardConfig[currentContext].label}
+                                        </span>
+                                    </div>
+                                    <ChevronDown size={14} style={{ 
+                                        transform: isChannelDropdownOpen ? 'rotate(180deg)' : 'none',
+                                        transition: 'transform 0.2s ease',
+                                        color: 'var(--label-tertiary)'
+                                    }} />
+                                </button>
+
+                                {isChannelDropdownOpen && (
+                                    <div style={{
+                                        position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0,
+                                        zIndex: 100, background: 'var(--bg-layer2)',
+                                        backdropFilter: 'blur(35px) saturate(190%)',
+                                        border: '1px solid var(--glass-border)',
+                                        borderRadius: '12px', padding: '6px',
+                                        boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
+                                        display: 'flex', flexDirection: 'column', gap: 4
+                                    }}>
+                                        {mainApps.filter(appKey => appKey !== currentContext).map(appKey => {
+                                            const app = dashboardConfig[appKey];
+                                            const Icon = app.icon;
+                                            return (
+                                                <Link
+                                                    key={appKey}
+                                                    href={appKey === 'master' ? '/dashboard' : `/dashboard/${appKey}`}
+                                                    onClick={() => setIsChannelDropdownOpen(false)}
+                                                    style={{
+                                                        display: 'flex', alignItems: 'center', gap: 10,
+                                                        padding: '8px 10px', borderRadius: '8px',
+                                                        color: 'var(--label-secondary)',
+                                                        textDecoration: 'none',
+                                                        transition: 'all 0.15s ease',
+                                                    }}
+                                                    className="hover:bg-[var(--fill-tertiary)] hover:text-[var(--label-primary)]"
+                                                >
+                                                    <Icon size={16} style={{ color: app.color, flexShrink: 0 }} />
+                                                    <span style={{ fontWeight: 500, fontSize: 13 }}>
+                                                        {app.label}
+                                                    </span>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={() => setIsHovered(true)}
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                width: '48px', height: '48px', borderRadius: '12px',
+                                background: 'var(--fill-secondary)',
+                                border: '1px solid var(--glass-border)',
+                                color: 'var(--label-primary)',
+                                cursor: 'pointer',
+                                margin: '0 auto'
+                            }}
+                        >
+                            {(() => {
+                                const app = dashboardConfig[currentContext];
+                                const Icon = app.icon;
+                                return <Icon size={20} style={{ color: app.color, flexShrink: 0 }} />;
+                            })()}
+                        </button>
+                    )}
                 </div>
 
                 {/* Divider */}
@@ -300,6 +361,12 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                             Sign Out
                         </span>
                     </button>
+                    {isExpanded && (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: '10px', color: 'var(--label-quaternary)', marginTop: 8, letterSpacing: '0.05em' }}>
+                            <span>Powered by</span>
+                            <Image src="/scalepods-logo.avif" alt="ScalePods" width={60} height={16} style={{ filter: 'brightness(0.9) opacity(0.8)' }} />
+                        </div>
+                    )}
                 </div>
             </aside>
 
@@ -324,20 +391,17 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 }
 
 function SidebarWalletModal({ isOpen, onClose, type, maqsamBalance, twilioBalance, calls }: any) {
-    const { voiceBalance } = useData();
     const vapiAgentUsed = useMemo(() => {
         if (!calls || !Array.isArray(calls)) return 0;
         return calls.filter((c: any) => c.source === 'vapi').reduce((acc: number, call: any) => acc + (call.breakdown?.agent || 0), 0);
     }, [calls]);
 
-    const elDetails = voiceBalance?.elevenlabs || (voiceBalance?.character_limit ? voiceBalance : null);
-
     const titles: Record<string, string> = {
-        vapi: 'Vapi Wallet', elevenlabs: 'ElevenLabs Credits',
+        vapi: 'Vapi Wallet',
         maqsam: 'Maqsam Telephony', twilio: 'Twilio Account',
     };
     const accentColors: Record<string, string> = {
-        vapi: '#0A84FF', elevenlabs: '#FF9F0A', maqsam: '#40CBE0', twilio: '#FF453A',
+        vapi: '#0A84FF', maqsam: '#40CBE0', twilio: '#FF453A',
     };
     const accent = accentColors[type] || '#0A84FF';
 
@@ -354,14 +418,6 @@ function SidebarWalletModal({ isOpen, onClose, type, maqsamBalance, twilioBalanc
                         <div style={{ background: `${accent}0F`, borderRadius: 16, padding: '28px 24px', textAlign: 'center', outline: `1px solid ${accent}22`, outlineOffset: -1 }}>
                             <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--label-tertiary)', marginBottom: 8 }}>Vapi Credits Used</div>
                             <div style={{ fontSize: 44, fontWeight: 300, letterSpacing: '-0.03em', color: accent, fontVariantNumeric: 'tabular-nums' }}>${vapiAgentUsed.toFixed(2)}</div>
-                        </div>
-                    )}
-                    {type === 'elevenlabs' && (
-                        <div style={{ background: `${accent}0F`, borderRadius: 16, padding: '24px', textAlign: 'center', outline: `1px solid ${accent}22`, outlineOffset: -1 }}>
-                            <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--label-tertiary)', marginBottom: 8 }}>Characters Remaining</div>
-                            <div style={{ fontSize: 40, fontWeight: 300, letterSpacing: '-0.03em', color: accent, fontVariantNumeric: 'tabular-nums' }}>
-                                {elDetails ? ((elDetails.character_limit - elDetails.character_count) || 0).toLocaleString() : '—'}
-                            </div>
                         </div>
                     )}
                     {type === 'twilio' && (

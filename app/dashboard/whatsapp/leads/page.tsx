@@ -230,11 +230,11 @@ export default function WhatsappLeadsPage() {
                         <button
                             onClick={() => { setActiveTab("leads"); setCurrentPage(1); }}
                             style={{ padding: '5px 14px', borderRadius: 'var(--radius-sm)', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'default', display: 'flex', alignItems: 'center', gap: 5, transition: 'all 130ms', background: activeTab === "leads" ? 'var(--bg-layer1)' : 'transparent', color: activeTab === "leads" ? 'var(--label-primary)' : 'var(--label-secondary)', boxShadow: activeTab === "leads" ? 'var(--shadow-sm)' : 'none' }}
-                        ><Users style={{ width: 13, height: 13 }} /> Leads</button>
+                        ><Users style={{ width: 13, height: 13 }} /> CRM Leads</button>
                         <button
                             onClick={() => { setActiveTab("owners"); setCurrentPage(1); }}
                             style={{ padding: '5px 14px', borderRadius: 'var(--radius-sm)', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'default', display: 'flex', alignItems: 'center', gap: 5, transition: 'all 130ms', background: activeTab === "owners" ? 'var(--bg-layer1)' : 'transparent', color: activeTab === "owners" ? 'var(--orange)' : 'var(--label-secondary)', boxShadow: activeTab === "owners" ? 'var(--shadow-sm)' : 'none' }}
-                        ><Building2 style={{ width: 13, height: 13 }} /> Owners</button>
+                        ><Building2 style={{ width: 13, height: 13 }} /> Generated Leads</button>
                     </div>
                     {(activeFilters.replyStatus.length > 0 || activeFilters.loops.length > 0 || searchQuery) && (
                         <button onClick={resetFilters} style={{ fontSize: 11, fontWeight: 700, color: 'var(--blue)', background: 'none', border: 'none', cursor: 'default' }}>RESET FILTERS</button>
@@ -249,7 +249,7 @@ export default function WhatsappLeadsPage() {
                     <Search style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 13, height: 13, color: 'var(--label-tertiary)' }} />
                     <Input
                         style={{ paddingLeft: 30, height: 36, background: 'var(--fill-tertiary)', border: '1px solid var(--glass-border)', color: 'var(--label-primary)', fontSize: 13, borderRadius: 'var(--radius-md)' }}
-                        placeholder={`Search ${activeTab}...`}
+                        placeholder={`Search ${activeTab === "leads" ? "CRM Leads" : "Generated Leads"}...`}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -322,7 +322,7 @@ export default function WhatsappLeadsPage() {
                                         onCheckedChange={toggleSelectAll}
                                     />
                                 </th>
-                                <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)' }}>{activeTab === "leads" ? "Name" : "Owner"}</th>
+                                <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)' }}>{activeTab === "leads" ? "Name" : "Generated Lead"}</th>
                                 <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)' }}>Phone</th>
                                 <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)' }}>{activeTab === "leads" ? "Loop" : "Source"}</th>
                                 <th style={{ padding: '10px 16px', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--label-tertiary)', textAlign: 'center' }}>Reply Status</th>
@@ -395,13 +395,13 @@ export default function WhatsappLeadsPage() {
                                         <tr>
                                             <td colSpan={7} style={{ padding: '80px 16px', textAlign: 'center', color: 'var(--label-tertiary)' }}>
                                                 <RefreshCw style={{ width: 20, height: 20, margin: '0 auto 8px', animation: 'spin 1s linear infinite', color: 'var(--orange)' }} />
-                                                Loading owner leads...
+                                                Loading generated leads...
                                             </td>
                                         </tr>
                                     ) : filteredOwners.length === 0 ? (
                                         <tr>
                                             <td colSpan={7} style={{ padding: '80px 16px', textAlign: 'center', color: 'var(--label-tertiary)' }}>
-                                                No owner leads found for this date range.
+                                                No generated leads found for this date range.
                                             </td>
                                         </tr>
                                     ) : (
@@ -423,7 +423,7 @@ export default function WhatsappLeadsPage() {
                                                     <td style={{ padding: '12px 16px', fontSize: 11, fontFamily: 'monospace', color: 'var(--label-secondary)' }}>{owner.contactNo || "—"}</td>
                                                     <td style={{ padding: '12px 16px' }}>
                                                         <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: 'var(--radius-sm)', fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', background: 'rgba(255,159,10,0.12)', color: 'var(--orange)' }}>
-                                                            OWNER DATA
+                                                            GENERATED LEADS OUTREACH
                                                         </span>
                                                     </td>
                                                     <td style={{ padding: '12px 16px', textAlign: 'center' }}>
@@ -456,7 +456,7 @@ export default function WhatsappLeadsPage() {
                                 {activeTab === "leads" ? paginatedLeads.length : paginatedOwners.length}
                             </span> of <span style={{ fontWeight: 700, color: 'var(--label-primary)' }}>
                                 {activeTab === "leads" ? filteredLeads.length : filteredOwners.length}
-                            </span> {activeTab}
+                            </span> {activeTab === "leads" ? "CRM Leads" : "Generated Leads"}
                         </p>
 
                         {totalPages > 1 && (

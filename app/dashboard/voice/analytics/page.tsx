@@ -39,7 +39,7 @@ export default function VoiceAnalyticsPage() {
         refreshVoiceMetrics({
             from: dateRange.from,
             to: dateRange.to || dateRange.from,
-            includeElevenLabs: accountFilter === 'elevenlabs',
+            includeElevenLabs: false,
         });
     }, [dateRange, accountFilter, refreshVoiceMetrics]);
 
@@ -70,9 +70,8 @@ export default function VoiceAnalyticsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="vapi">All Vapi Calls</SelectItem>
-                            <SelectItem value="vapi-owners">Owner Leads</SelectItem>
-                            <SelectItem value="vapi-normal">Normal Calls</SelectItem>
-                            <SelectItem value="elevenlabs">ElevenLabs</SelectItem>
+                            <SelectItem value="vapi-owners">Generated Leads</SelectItem>
+                            <SelectItem value="vapi-normal">CRM Leads</SelectItem>
                         </SelectContent>
                     </Select>
                     <DateRangePicker onUpdate={(values) => setDateRange(values.range)} />
@@ -82,14 +81,14 @@ export default function VoiceAnalyticsPage() {
             {/* All-Time Totals */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <StatCard
-                    title="Total Normal Calls"
+                    title="Total CRM Leads Calls"
                     value={(m?.allTimeNormalCalls ?? allTimeVoiceCount).toLocaleString()}
                     change="All Time"
                     icon={<Phone style={{ width: 18, height: 18 }} />}
                     color="var(--blue)"
                 />
                 <StatCard
-                    title="Total Owner Calls"
+                    title="Total Generated Leads Calls"
                     value={(m?.allTimeOwnerCalls ?? allTimeOwnerVoiceCount).toLocaleString()}
                     change="All Time"
                     icon={<Crown style={{ width: 18, height: 18 }} />}
@@ -104,7 +103,7 @@ export default function VoiceAnalyticsPage() {
                         <div style={{ padding: 6, borderRadius: 'var(--radius-md)', background: 'var(--blue)' }}>
                             <PhoneIncoming style={{ width: 14, height: 14, color: '#fff' }} />
                         </div>
-                        <h2 style={{ fontSize: 15, fontWeight: 700, color: 'var(--label-primary)' }}>Normal Calls Analytics</h2>
+                        <h2 style={{ fontSize: 15, fontWeight: 700, color: 'var(--label-primary)' }}>CRM Leads Analytics</h2>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <StatCard title="Calls in Range" value={(m?.normalCalls ?? 0).toLocaleString()} change="Selected Dates" icon={<Phone style={{ width: 18, height: 18 }} />} color="var(--blue)" />
@@ -122,7 +121,7 @@ export default function VoiceAnalyticsPage() {
                         <div style={{ padding: 6, borderRadius: 'var(--radius-md)', background: 'var(--orange)' }}>
                             <Crown style={{ width: 14, height: 14, color: '#fff' }} />
                         </div>
-                        <h2 style={{ fontSize: 15, fontWeight: 700, color: 'var(--label-primary)' }}>Owner Data Analytics</h2>
+                        <h2 style={{ fontSize: 15, fontWeight: 700, color: 'var(--label-primary)' }}>Generated Leads Outreach Analytics</h2>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <StatCard title="Calls in Range" value={(m?.ownerCalls ?? 0).toLocaleString()} change="Selected Dates" icon={<Crown style={{ width: 18, height: 18 }} />} color="var(--orange)" />

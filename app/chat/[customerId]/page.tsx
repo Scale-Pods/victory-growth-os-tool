@@ -80,13 +80,13 @@ export default function PublicChatPage({ params }: { params: Promise<{ customerI
                             onClick={() => setActiveTab("lead")}
                             className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "lead" ? "bg-slate-900 text-white" : "text-slate-400 hover:text-slate-600"}`}
                         >
-                            Normal Chat
+                            CRM Lead Chat
                         </button>
                         <button
                             onClick={() => setActiveTab("owner")}
                             className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all ${activeTab === "owner" ? "bg-amber-600 text-white" : "text-slate-400 hover:text-slate-600"}`}
                         >
-                            Owner Chat
+                            Generated Lead Chat
                         </button>
                     </div>
                 )}

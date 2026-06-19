@@ -82,8 +82,6 @@ export default function VoiceCalculatorPage() {
                 if (tCost !== undefined && tCost !== -1) {
                     agentTotal += aCost;
                     telephonyTotal += tCost;
-                } else if (call.source === 'elevenlabs') {
-                    agentTotal += (parseFloat(call.cost.replace('$', '')) || 0);
                 } else {
                     const rawTotal = parseFloat(call.cost.replace('$', '')) || 0;
                     agentTotal += aCost;
@@ -147,8 +145,8 @@ export default function VoiceCalculatorPage() {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="vapi">All Vapi Calls</SelectItem>
-                                <SelectItem value="vapi-normal">Normal Calls</SelectItem>
-                                <SelectItem value="vapi-owners">Owner Leads</SelectItem>
+                                <SelectItem value="vapi-normal">CRM Leads</SelectItem>
+                                <SelectItem value="vapi-owners">Generated Leads</SelectItem>
                                 <SelectItem value="open-house">🏠 Open House Event</SelectItem>
                             </SelectContent>
                         </Select>

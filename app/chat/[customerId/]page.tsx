@@ -75,8 +75,9 @@ export default function PublicChatPage({ params }: { params: Promise<{ customerI
                     </div>
                 </div>
                 
-                <div className="mt-6 text-center text-slate-400 text-[10px] uppercase tracking-widest font-bold">
-                    Powered by ScalePods
+                <div className="mt-6 flex items-center justify-center gap-2 text-slate-400 text-[10px] uppercase tracking-widest font-bold">
+                    <span>Powered by</span>
+                    <img src="/scalepods-logo.avif" alt="ScalePods" style={{ height: '14px', width: 'auto', display: 'inline-block', verticalAlign: 'middle', opacity: 0.8 }} />
                 </div>
             </div>
         </div>

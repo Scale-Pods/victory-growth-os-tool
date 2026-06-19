@@ -43,7 +43,7 @@ const DynamicRowCells = ({ call, leads, telephonyCost }: { call: any, leads: any
                     </span>
                     {call.vapiAccount === 'owners' && (
                         <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 7px', borderRadius: 'var(--radius-xs)', fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em', background: 'rgba(255,159,10,0.12)', color: 'var(--orange)' }}>
-                            owner leads
+                            generated leads
                         </span>
                     )}
                     {call.assistantId === '560ca61b-8cd3-4b5f-996b-2966abfa37fd' && (
@@ -130,15 +130,13 @@ export default function VoiceLogsPage() {
 
     useEffect(() => {
         if (!refreshCalls) return;
-        const includeElevenLabs = accountFilter === 'elevenlabs';
-        const provider = accountFilter === 'elevenlabs' ? 'elevenlabs' : 'vapi';
         refreshCalls({
             from: !dateRange ? undefined : dateRange?.from,
             to: !dateRange ? undefined : (dateRange?.to || dateRange?.from),
-            includeElevenLabs,
-            provider
+            includeElevenLabs: false,
+            provider: 'vapi'
         });
-    }, [dateRange, accountFilter, refreshCalls]);
+    }, [dateRange, refreshCalls]);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -186,7 +184,6 @@ export default function VoiceLogsPage() {
             if (accountFilter === 'vapi' && call.source !== 'vapi') return false;
             if (accountFilter === 'vapi-normal' && (call.source !== 'vapi' || call.vapiAccount !== 'normal')) return false;
             if (accountFilter === 'vapi-owners' && (call.source !== 'vapi' || call.vapiAccount !== 'owners')) return false;
-            if (accountFilter === 'elevenlabs' && call.source !== 'elevenlabs') return false;
             if (accountFilter === 'open-house' && call.assistantId !== '1ef6ea66-0a75-45f5-b025-1743e048dc90') return false;
             if (statusFilter !== "all" && call.status !== statusFilter) return false;
             if (typeFilter !== "all") {
@@ -233,16 +230,14 @@ export default function VoiceLogsPage() {
     }, [allCallsMapped, dateRange, statusFilter, typeFilter, accountFilter, phoneFilter, sortBy, regionFilter]);
 
     const handleRefresh = () => {
-        const includeElevenLabs = accountFilter === 'elevenlabs';
-        const provider = accountFilter === 'elevenlabs' ? 'elevenlabs' : 'vapi';
-        refreshCalls({ from: dateRange?.from, to: dateRange?.to || dateRange?.from, includeElevenLabs, provider, force: true });
+        refreshCalls({ from: dateRange?.from, to: dateRange?.to || dateRange?.from, includeElevenLabs: false, provider: 'vapi', force: true });
     };
 
     const handleExport = async () => {
         if (calls.length === 0) return;
         setExporting(true);
         try {
-            const missingCostCalls = calls.filter(c => telephonyCosts[c.id] === undefined && c.source !== 'elevenlabs');
+            const missingCostCalls = calls.filter(c => telephonyCosts[c.id] === undefined);
             let allCosts = { ...telephonyCosts };
             if (missingCostCalls.length > 0) {
                 const res = await fetch('/api/calls/telephony-cost', {
@@ -278,7 +273,7 @@ export default function VoiceLogsPage() {
 
     useEffect(() => {
         if (!paginatedCalls || paginatedCalls.length === 0) return;
-        const callsToFetch = paginatedCalls.filter(c => telephonyCosts[c.id] === undefined && c.source !== 'elevenlabs');
+        const callsToFetch = paginatedCalls.filter(c => telephonyCosts[c.id] === undefined);
         if (callsToFetch.length === 0) return;
         setTelephonyCosts(prev => { const fetching = { ...prev }; callsToFetch.forEach(c => fetching[c.id] = -1); return fetching; });
         fetch('/api/calls/telephony-cost', {
@@ -312,14 +307,6 @@ export default function VoiceLogsPage() {
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
                     <button
-                        style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)', background: 'var(--fill-tertiary)', color: 'var(--label-secondary)', fontSize: 12, fontWeight: 500, cursor: 'default' }}
-                        onMouseEnter={e => (e.currentTarget.style.background = 'var(--fill-secondary)')}
-                        onMouseLeave={e => (e.currentTarget.style.background = 'var(--fill-tertiary)')}
-                        onClick={() => setCostModalOpen(true)}
-                    >
-                        <Info style={{ width: 13, height: 13 }} /> Cost Info
-                    </button>
-                    <button
                         style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)', background: exporting || calls.length === 0 ? 'var(--fill-quaternary)' : 'rgba(48,209,88,0.10)', color: exporting || calls.length === 0 ? 'var(--label-tertiary)' : 'var(--green)', fontSize: 12, fontWeight: 500, cursor: 'default', opacity: calls.length === 0 ? 0.5 : 1 }}
                         onClick={handleExport}
                         disabled={exporting || calls.length === 0}
@@ -341,7 +328,7 @@ export default function VoiceLogsPage() {
 
             {/* Filters Bar */}
             <div className="liquid-card" style={{ padding: '10px 12px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
-                <div style={{ position: 'relative', width: 200 }}>
+                <div style={{ position: 'relative', width: 180 }}>
                     <Search style={{ position: 'absolute', left: 9, top: '50%', transform: 'translateY(-50%)', width: 13, height: 13, color: 'var(--label-tertiary)' }} />
                     <Input
                         placeholder="Search name or phone..."
@@ -352,20 +339,19 @@ export default function VoiceLogsPage() {
                 </div>
 
                 <Select value={accountFilter} onValueChange={setAccountFilter}>
-                    <SelectTrigger style={{ width: 180, height: 34, fontSize: 12 }}>
+                    <SelectTrigger style={{ width: 160, height: 34, fontSize: 12 }}>
                         <SelectValue placeholder="Account / Provider" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="vapi">All Vapi Calls</SelectItem>
-                        <SelectItem value="vapi-owners">Owner Leads</SelectItem>
-                        <SelectItem value="vapi-normal">Normal Calls</SelectItem>
+                        <SelectItem value="vapi-owners">Generated Leads</SelectItem>
+                        <SelectItem value="vapi-normal">CRM Leads</SelectItem>
                         <SelectItem value="open-house">🏠 Open House Event</SelectItem>
-                        <SelectItem value="elevenlabs">ElevenLabs</SelectItem>
                     </SelectContent>
                 </Select>
 
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                    <SelectTrigger style={{ width: 140, height: 34, fontSize: 12 }}><SelectValue placeholder="Call Type" /></SelectTrigger>
+                    <SelectTrigger style={{ width: 110, height: 34, fontSize: 12 }}><SelectValue placeholder="Call Type" /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Types</SelectItem>
                         <SelectItem value="Inbound">Inbound</SelectItem>
@@ -374,7 +360,7 @@ export default function VoiceLogsPage() {
                 </Select>
 
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger style={{ width: 130, height: 34, fontSize: 12 }}><SelectValue placeholder="Status" /></SelectTrigger>
+                    <SelectTrigger style={{ width: 110, height: 34, fontSize: 12 }}><SelectValue placeholder="Status" /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="all">All Status</SelectItem>
                         <SelectItem value="answered">Answered / Done</SelectItem>
@@ -383,8 +369,8 @@ export default function VoiceLogsPage() {
                 </Select>
 
                 <Select value={regionFilter} onValueChange={setRegionFilter}>
-                    <SelectTrigger style={{ width: 155, height: 34, fontSize: 12 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <SelectTrigger style={{ width: 150, height: 34, fontSize: 12, whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
                             <Phone style={{ width: 12, height: 12, color: 'var(--label-tertiary)', flexShrink: 0 }} />
                             <SelectValue placeholder="Region" />
                         </div>
@@ -398,7 +384,7 @@ export default function VoiceLogsPage() {
                 </Select>
 
                 <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger style={{ width: 145, height: 34, fontSize: 12 }}><SelectValue placeholder="Sort By" /></SelectTrigger>
+                    <SelectTrigger style={{ width: 130, height: 34, fontSize: 12 }}><SelectValue placeholder="Sort By" /></SelectTrigger>
                     <SelectContent>
                         <SelectItem value="newest">Newest First</SelectItem>
                         <SelectItem value="oldest">Oldest First</SelectItem>
@@ -472,45 +458,6 @@ export default function VoiceLogsPage() {
 
             <CallDetailsModal open={modalOpen} onOpenChange={setModalOpen} call={selectedCall} />
 
-            {/* Cost Info Modal */}
-            <Dialog open={costModalOpen} onOpenChange={setCostModalOpen}>
-                <DialogContent className="apple-dialog" style={{ maxWidth: 500, padding: 0, overflow: 'hidden' }}>
-                    <DialogHeader style={{ padding: '20px 24px', borderBottom: '1px solid var(--hairline)', background: 'var(--fill-quaternary)' }}>
-                        <DialogTitle style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 16, fontWeight: 700, color: 'var(--label-primary)' }}>
-                            <div style={{ padding: 8, borderRadius: 'var(--radius-md)', background: 'rgba(10,132,255,0.10)' }}>
-                                <Info style={{ width: 16, height: 16, color: 'var(--blue)' }} />
-                            </div>
-                            How Costing is Calculated
-                        </DialogTitle>
-                        <DialogDescription style={{ fontSize: 12, color: 'var(--label-secondary)', marginTop: 4 }}>
-                            Understanding our automated billing and rate matching logic.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                        {[
-                            { n: 1, title: "Normalization", desc: "System cleans phone numbers by removing all symbols and spaces, ensuring consistent lookup against our global rate database." },
-                            { n: 2, title: "Longest-Prefix Matching", desc: "We use high-precision matching. If a number matches multiple regions (e.g. UAE General vs Dubai Fixed), we prioritize the most specific prefix for maximum accuracy." },
-                            { n: 3, title: "Per-Minute Computation", desc: "Duration is tracked in seconds and rounded up to the nearest minute. For outbound calls, the matched rate is applied. Inbound calls are always computed at $0.02." },
-                            { n: 4, title: "Special Backup Rates", desc: "For outbound calls from US or UK numbers to UAE destinations, a fixed backup rate of $0.2995/min is applied to ensure connectivity." },
-                        ].map(({ n, title, desc }) => (
-                            <div key={n} style={{ display: 'flex', gap: 14 }}>
-                                <div style={{ flexShrink: 0, width: 28, height: 28, borderRadius: '50%', background: 'var(--fill-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 12, color: 'var(--label-secondary)' }}>{n}</div>
-                                <div>
-                                    <h4 style={{ fontWeight: 700, fontSize: 13, color: 'var(--label-primary)', marginBottom: 3 }}>{title}</h4>
-                                    <p style={{ fontSize: 12, color: 'var(--label-secondary)', lineHeight: 1.5 }}>{desc}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <DialogFooter style={{ padding: '16px 24px', borderTop: '1px solid var(--hairline)', background: 'var(--fill-quaternary)' }}>
-                        <a href="/billing-plan.pdf" download style={{ width: '100%' }}>
-                            <button style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '10px 0', borderRadius: 'var(--radius-lg)', background: 'var(--label-primary)', color: 'var(--bg-app)', fontWeight: 700, fontSize: 13, border: 'none', cursor: 'default' }}>
-                                <Download style={{ width: 14, height: 14 }} /> Download Billing Plan PDF
-                            </button>
-                        </a>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }

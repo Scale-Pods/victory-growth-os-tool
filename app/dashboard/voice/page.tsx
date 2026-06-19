@@ -57,7 +57,7 @@ function AppleTooltip({ active, payload, label }: any) {
 }
 
 export default function VoiceDashboardPage() {
-    const [providerFilter, setProviderFilter] = useState("vapi");
+    const providerFilter = "vapi";
     const [dateRange, setDateRange] = useState<any>({ from: subDays(new Date(), 7), to: new Date() });
 
     const { voiceMetrics, loadingVoiceMetrics, refreshVoiceMetrics } = useData();
@@ -67,9 +67,9 @@ export default function VoiceDashboardPage() {
         refreshVoiceMetrics({
             from: dateRange?.from,
             to: dateRange?.to,
-            includeElevenLabs: providerFilter === 'elevenlabs',
+            includeElevenLabs: false,
         });
-    }, [dateRange, providerFilter, refreshVoiceMetrics]);
+    }, [dateRange, refreshVoiceMetrics]);
 
     const m = voiceMetrics;
 
@@ -117,23 +117,8 @@ export default function VoiceDashboardPage() {
                     </p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Select value={providerFilter} onValueChange={setProviderFilter}>
-                        <SelectTrigger style={{
-                            height: 38, fontSize: 13, fontWeight: 500,
-                            background: 'var(--fill-tertiary)', border: '1px solid var(--glass-border)',
-                            borderRadius: 10, padding: '0 12px', width: 150,
-                            color: 'var(--label-primary)',
-                        }}>
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="vapi">Vapi</SelectItem>
-                            <SelectItem value="elevenlabs">ElevenLabs</SelectItem>
-                        </SelectContent>
-                    </Select>
-
                     <button
-                        onClick={() => refreshVoiceMetrics({ from: dateRange?.from, to: dateRange?.to, includeElevenLabs: providerFilter === 'elevenlabs', force: true })}
+                        onClick={() => refreshVoiceMetrics({ from: dateRange?.from, to: dateRange?.to, includeElevenLabs: false, force: true })}
                         disabled={loading}
                         style={{
                             height: 38, padding: '0 14px', borderRadius: 10,
@@ -157,8 +142,8 @@ export default function VoiceDashboardPage() {
             {providerFilter === 'vapi' && !loading && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                     {[
-                        { label: 'Normal Calls', value: normalCalls, icon: <Phone size={15} />, color: 'var(--blue)' },
-                        { label: 'Owner Leads',  value: ownerCalls,  icon: <Crown size={15} />, color: 'var(--orange)' },
+                        { label: 'CRM Leads', value: normalCalls, icon: <Phone size={15} />, color: 'var(--blue)' },
+                        { label: 'Generated Leads Outreach',  value: ownerCalls,  icon: <Crown size={15} />, color: 'var(--orange)' },
                     ].map(item => (
                         <div
                             key={item.label}

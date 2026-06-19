@@ -57,7 +57,6 @@ export default function CredentialsPage() {
     }, []);
 
     const vapiDetails = voiceBalance?.vapi;
-    const elDetails = voiceBalance?.elevenlabs || (voiceBalance?.character_limit ? voiceBalance : null);
 
     return (
         <div className="space-y-8 pb-10 max-w-5xl mx-auto">
@@ -135,7 +134,7 @@ export default function CredentialsPage() {
 
                 {/* Voice Section */}
                 <CredentialSection
-                    title="Voice Agent (Vapi & ElevenLabs)"
+                    title="Voice Agent (Vapi)"
                     description="AI Voice configuration and wallet balances."
                     icon={Mic}
                     iconColor="text-blue-600"
@@ -164,41 +163,6 @@ export default function CredentialsPage() {
                                 <p className="text-[10px] text-blue-500 mt-4 font-semibold bg-blue-50 px-3 py-1 rounded-full self-center border border-blue-100 italic">
                                     Total Lifetime Consumption
                                 </p>
-                            </div>
-                        </div>
-
-                        {/* ElevenLabs Details */}
-                        <div className="bg-amber-50/50 rounded-lg p-5 border border-amber-100 space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-white rounded-md border border-amber-200">
-                                        <Settings className="h-5 w-5 text-amber-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-bold text-slate-900">ElevenLabs Credits</p>
-                                        <p className="text-xs text-slate-500">Subscription Status: {elDetails?.status || 'Active'}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Characters Left</p>
-                                    <p className="text-2xl font-black text-emerald-600 uppercase">
-                                        {elDetails ? `${((elDetails.character_limit - elDetails.character_count) || 0).toLocaleString()}` : '...'}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-amber-100">
-                                <div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Plan Capacity</p>
-                                    <p className="text-sm font-bold text-slate-700">
-                                        {(elDetails?.character_limit || 0).toLocaleString()}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Used Characters</p>
-                                    <p className="text-sm font-bold text-slate-500">
-                                        {(elDetails?.character_count || 0).toLocaleString()}
-                                    </p>
-                                </div>
                             </div>
                         </div>
                     </div>

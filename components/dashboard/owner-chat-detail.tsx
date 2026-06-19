@@ -177,7 +177,7 @@ export function OwnerChatDetail({ owner, onClose }: OwnerChatDetailProps) {
         return (
             <div className="h-[500px] flex flex-col items-center justify-center space-y-4 text-slate-400">
                 <MessageSquare className="h-12 w-12 opacity-20" />
-                <p className="font-medium">Owner not found</p>
+                <p className="font-medium">Generated lead not found</p>
                 {onClose && <Button variant="outline" onClick={onClose}>Close</Button>}
             </div>
         );
@@ -188,11 +188,11 @@ export function OwnerChatDetail({ owner, onClose }: OwnerChatDetailProps) {
             {/* Header */}
             <div className="flex items-center justify-between shrink-0">
                 <div>
-                    <h2 className="text-xl font-bold text-slate-900">{owner.Name || owner.name || "Owner"}</h2>
+                    <h2 className="text-xl font-bold text-slate-900">{owner.Name || owner.name || "Generated Lead"}</h2>
                     <div className="flex items-center gap-2 text-xs text-slate-500">
                         <span>{owner.contactNo || owner.Phone || owner.phone || "—"}</span>
                         <span>•</span>
-                        <span className="text-amber-600 font-bold">Owner Lead</span>
+                        <span className="text-amber-600 font-bold">Generated Lead Outreach</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -231,7 +231,7 @@ export function OwnerChatDetail({ owner, onClose }: OwnerChatDetailProps) {
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-slate-300 space-y-2">
                                 <MessageSquare className="h-10 w-10 opacity-20" />
-                                <p className="text-sm">No WhatsApp messages found for this owner.</p>
+                                <p className="text-sm">No WhatsApp messages found for this lead.</p>
                             </div>
                         ) : (
                             messages.map((msg, idx) => {
@@ -289,7 +289,7 @@ export function OwnerChatDetail({ owner, onClose }: OwnerChatDetailProps) {
                     <Card className="border-slate-200 shadow-sm bg-white">
                         <CardContent className="p-4 space-y-4">
                             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                                <User className="h-4 w-4 text-slate-400" /> Owner Information
+                                <User className="h-4 w-4 text-slate-400" /> Lead Information
                             </h3>
                             <div className="space-y-3 text-sm">
                                 <div>
@@ -300,7 +300,7 @@ export function OwnerChatDetail({ owner, onClose }: OwnerChatDetailProps) {
                                
                                 <div>
                                     <span className="text-[10px] font-bold text-slate-400 uppercase">Source Table</span>
-                                    <p className="font-bold text-amber-600 mt-1 text-xs">owner_data</p>
+                                    <p className="font-bold text-amber-600 mt-1 text-xs">generated_leads_outreach</p>
                                 </div>
                             </div>
                         </CardContent>

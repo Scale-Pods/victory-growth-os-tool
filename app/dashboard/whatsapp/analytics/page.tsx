@@ -189,12 +189,12 @@ export default function WhatsappAnalyticsPage() {
             {/* Owner Analytics */}
             <div>
                 <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--label-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <Building2 style={{ width: 13, height: 13, color: 'var(--orange)' }} /> Owner Campaigns
+                    <Building2 style={{ width: 13, height: 13, color: 'var(--orange)' }} /> Generated Leads Outreach
                 </p>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <StatCard title="Owner Reachouts" value={loading ? "..." : stats.ownerReachouts.toLocaleString()} icon={Building2} color="var(--orange)" />
-                    <StatCard title="Owner Replies" value={loading ? "..." : stats.ownerReplies.toLocaleString()} icon={Reply} color="var(--green)" />
-                    <StatCard title="Owner Reply Rate" value={loading ? "..." : `${ownerReplyRate}%`} icon={TrendingUp} color="var(--purple)" />
+                    <StatCard title="Generated Leads Outreach" value={loading ? "..." : stats.ownerReachouts.toLocaleString()} icon={Building2} color="var(--orange)" />
+                    <StatCard title="Generated Replies" value={loading ? "..." : stats.ownerReplies.toLocaleString()} icon={Reply} color="var(--green)" />
+                    <StatCard title="Generated Reply Rate" value={loading ? "..." : `${ownerReplyRate}%`} icon={TrendingUp} color="var(--purple)" />
                 </div>
             </div>
 
