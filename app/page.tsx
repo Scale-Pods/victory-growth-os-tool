@@ -32,8 +32,13 @@ export default function LandingPage() {
             >
                 <div className="max-w-6xl mx-auto px-6 h-[60px] flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="relative w-36 h-10">
-                            <Image src="/VE-Logo-Color.svg" alt="Victory Energy" fill className="object-contain" priority />
+                        <div 
+                            className="relative flex items-center justify-center rounded-xl bg-white/95 px-3 py-1 shadow-sm border border-white/20 transition-all duration-200 hover:bg-white"
+                            style={{ height: '36px' }}
+                        >
+                            <div className="relative w-[110px] h-[24px]">
+                                <Image src="/VE-Logo-Color.svg" alt="Victory Energy" fill className="object-contain" priority />
+                            </div>
                         </div>
                         <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.12)' }} />
                         <span style={{ fontSize: 12, fontWeight: 500, color: 'rgba(255,255,255,0.40)', letterSpacing: '-0.01em' }}>

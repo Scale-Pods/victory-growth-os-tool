@@ -50,6 +50,17 @@ const dashboardConfig: Record<string, { label: string; color: string; icon: any;
             { title: "Analytics", href: "/dashboard/whatsapp/analytics", icon: BarChart2 },
         ],
     },
+    sms: {
+        label: "SMS",
+        color: "#EC4899",
+        icon: MessageSquare,
+        items: [
+            { title: "Dashboard", href: "/dashboard/sms", icon: LayoutDashboard },
+            { title: "Chat", href: "/dashboard/sms/chat", icon: MessageSquare },
+            { title: "Leads", href: "/dashboard/sms/leads", icon: Users },
+            { title: "Analytics", href: "/dashboard/sms/analytics", icon: BarChart2 },
+        ],
+    },
     voice: {
         label: "Voice",
         color: "#06B6D4",
@@ -63,7 +74,7 @@ const dashboardConfig: Record<string, { label: string; color: string; icon: any;
     },
 };
 
-const mainApps = ['master', 'email', 'whatsapp', 'voice'];
+const mainApps = ['master', 'email', 'whatsapp', 'sms', 'voice'];
 
 
 
@@ -120,6 +131,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     let currentContext = "master";
     if (pathname.startsWith("/dashboard/email")) currentContext = "email";
     else if (pathname.startsWith("/dashboard/whatsapp")) currentContext = "whatsapp";
+    else if (pathname.startsWith("/dashboard/sms")) currentContext = "sms";
     else if (pathname.startsWith("/dashboard/voice")) currentContext = "voice";
 
     const activeConfig = dashboardConfig[currentContext];

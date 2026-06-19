@@ -2,7 +2,7 @@
 
 import {
     Users, Mail, MessageCircle, Phone, TrendingUp, PieChart as PieChartIcon,
-    Activity, Maximize2, Minimize2, X, Expand, Info, Wallet, LayoutDashboard, Mic
+    Activity, Maximize2, Minimize2, X, Expand, Info, Wallet, LayoutDashboard, Mic, MessageSquare
 } from "lucide-react";
 import {
     Tooltip as UITooltip, TooltipContent as UITooltipContent,
@@ -142,10 +142,8 @@ function MetricTile({
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                     {action}
-                    <div style={{
-                        width: 36, height: 36, borderRadius: 10,
+                    <div className="tile-icon-wrapper" style={{
                         background: `${accentColor}18`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
                         color: accentColor,
                     }}>
                         {icon}
@@ -246,10 +244,52 @@ export default function MasterDashboard() {
         setWaReplyLeads(replied);
     }, []);
 
+    /* SMS stats */
+    const [smsUniqueSent, setSmsUniqueSent] = useState<number | null>(null);
+    const [smsReplies, setSmsReplies] = useState<number | null>(null);
+    const [smsOwnerReachouts, setSmsOwnerReachouts] = useState<number>(0);
+    const [smsOwnerReplies, setSmsOwnerReplies] = useState<number>(0);
+
+    const fetchSmsStats = useCallback(async (from: Date, to: Date) => {
+        const fromISO = startOfDay(from).toISOString();
+        const toISO = endOfDay(to).toISOString();
+        const res = await fetch(`/api/sms-leads?from=${encodeURIComponent(fromISO)}&to=${encodeURIComponent(toISO)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const allLeadsSMS: any[] = [...(data.nr_wf || []), ...(data.followup || []), ...(data.nurture || [])];
+        const rangeFrom = startOfDay(from).getTime();
+        const rangeTo = endOfDay(to).getTime();
+        let unique = 0;
+        let repliedCount = 0;
+        allLeadsSMS.forEach((lead: any) => {
+            if (!lead["W.P_1"]) return;
+            const wp1t = lead.wp1_parsed_date ? new Date(lead.wp1_parsed_date).getTime() : null;
+            const lct = lead.whatsapp_last_contacted ? new Date(lead.whatsapp_last_contacted).getTime() : null;
+            const inRange = (wp1t && wp1t >= rangeFrom && wp1t <= rangeTo) || (lct && lct >= rangeFrom && lct <= rangeTo) || (!wp1t && !lct);
+            if (!inRange) return;
+            unique++;
+            const wp = lead.WP_Replied_track || lead["WP_Replied_track"];
+            const hasReply = wp && String(wp).trim() && !['no', 'none'].includes(String(wp).trim().toLowerCase());
+            if (hasReply) repliedCount++;
+        });
+        setSmsUniqueSent(unique);
+        setSmsReplies(repliedCount);
+
+        const owners = data.owners || [];
+        const ownerReachouts = owners.filter((o: any) => o["Whatsapp_1"]).length;
+        const ownerReplies = owners.filter((o: any) => {
+            const v = o["WTS_Reply_Track"];
+            return v && String(v).trim() && String(v).toLowerCase() !== "no";
+        }).length;
+        setSmsOwnerReachouts(ownerReachouts);
+        setSmsOwnerReplies(ownerReplies);
+    }, []);
+
     useEffect(() => {
         if (!dateRange?.from) return;
         fetchWaStats(dateRange.from, dateRange.to || dateRange.from);
-    }, [dateRange, fetchWaStats]);
+        fetchSmsStats(dateRange.from, dateRange.to || dateRange.from);
+    }, [dateRange, fetchWaStats, fetchSmsStats]);
 
     const loading = loadingMasterMetrics;
     const acquisitionChartData = useMemo(() => {
@@ -277,9 +317,15 @@ export default function MasterDashboard() {
     const replyRateGen = totalWaReachoutsGen > 0 ? ((totalWaRepliesGen / totalWaReachoutsGen) * 100).toFixed(1) : '0';
     const totalVoiceCallsGen = m?.ownerVoiceCalls ?? 0;
 
+    const totalSmsReachouts = smsUniqueSent ?? 0;
+    const totalSmsReplies = smsReplies ?? 0;
+    const smsReplyRate = totalSmsReachouts > 0 ? ((totalSmsReplies / totalSmsReachouts) * 100).toFixed(1) : '0';
+    const smsReplyRateGen = smsOwnerReachouts > 0 ? ((smsOwnerReplies / smsOwnerReachouts) * 100).toFixed(1) : '0';
+
     const serviceDistribution = [
         { name: 'Email', value: 0, color: 'var(--blue)' },
         { name: 'WhatsApp', value: totalWaReachouts, color: 'var(--green)' },
+        { name: 'SMS', value: totalSmsReachouts, color: '#EC4899' },
         { name: 'Voice', value: m?.totalVoiceCalls ?? 0, color: 'var(--purple)' },
     ];
 
@@ -329,7 +375,7 @@ export default function MasterDashboard() {
                         All Leads Data
                     </h2>
                 </div>
-                <div className="metric-grid">
+                <div className="metric-grid-7">
                     <MetricTile
                         title="Total Leads"
                         value={loading ? '—' : (m?.totalLeads ?? 0).toLocaleString()}
@@ -358,6 +404,15 @@ export default function MasterDashboard() {
                         onClick={() => router.push('/dashboard/whatsapp/chat')}
                     />
                     <MetricTile
+                        title="SMS Reachouts"
+                        value={loading ? '—' : totalSmsReachouts.toLocaleString()}
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="#EC4899"
+                        icon={<MessageSquare size={17} />}
+                        onClick={() => router.push('/dashboard/sms/chat')}
+                    />
+                    <MetricTile
                         title="Voice Calls"
                         value={loading ? '—' : (m?.totalVoiceCalls ?? 0).toLocaleString()}
                         trend="Real-time"
@@ -368,7 +423,7 @@ export default function MasterDashboard() {
                         info="Shows CRM Leads calls containing US, UK, UAE, 1731 leads, and openhouse leads."
                     />
                     <MetricTile
-                        title="Total Replies"
+                        title="WA Replies"
                         value={loading ? '—' : totalWaReplies.toLocaleString()}
                         trend={`${replyRate}% reply rate`}
                         trendDir="up"
@@ -386,6 +441,15 @@ export default function MasterDashboard() {
                                 {isRepliesExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
                             </button>
                         }
+                    />
+                    <MetricTile
+                        title="SMS Replies"
+                        value={loading ? '—' : totalSmsReplies.toLocaleString()}
+                        trend={`${smsReplyRate}% reply rate`}
+                        trendDir="up"
+                        accentColor="#EC4899"
+                        icon={<MessageSquare size={17} />}
+                        onClick={() => router.push('/dashboard/sms/chat?tab=leads')}
                     />
                 </div>
             </div>
@@ -405,7 +469,7 @@ export default function MasterDashboard() {
                         CRM Leads
                     </h2>
                 </div>
-                <div className="metric-grid">
+                <div className="metric-grid-7">
                     <MetricTile
                         title="Total CRM Leads"
                         value={loading ? '—' : totalLeadsCRM.toLocaleString()}
@@ -416,12 +480,29 @@ export default function MasterDashboard() {
                         onClick={() => router.push('/dashboard/leads')}
                     />
                     <MetricTile
+                        title="Emails Sent (CRM)"
+                        value="—"
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="var(--blue)"
+                        icon={<Mail size={17} />}
+                        onClick={() => router.push('/dashboard/email/sent')}
+                    />
+                    <MetricTile
                         title="WA Reachouts (CRM)"
                         value={loading ? '—' : totalWaReachoutsCRM.toLocaleString()}
                         trend="Real-time"
                         trendDir="neutral"
                         accentColor="var(--purple)"
                         icon={<MessageCircle size={17} />}
+                    />
+                    <MetricTile
+                        title="SMS Reachouts (CRM)"
+                        value={loading ? '—' : totalSmsReachouts.toLocaleString()}
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="#EC4899"
+                        icon={<MessageSquare size={17} />}
                     />
                     <MetricTile
                         title="Voice Calls (CRM)"
@@ -432,12 +513,20 @@ export default function MasterDashboard() {
                         icon={<Phone size={17} />}
                     />
                     <MetricTile
-                        title="Replies (CRM)"
+                        title="WA Replies (CRM)"
                         value={loading ? '—' : totalWaRepliesCRM.toLocaleString()}
                         trend={`${replyRateCRM}% reply rate`}
                         trendDir="up"
                         accentColor="var(--indigo)"
                         icon={<Expand size={17} />}
+                    />
+                    <MetricTile
+                        title="SMS Replies (CRM)"
+                        value={loading ? '—' : totalSmsReplies.toLocaleString()}
+                        trend={`${smsReplyRate}% reply rate`}
+                        trendDir="up"
+                        accentColor="#EC4899"
+                        icon={<MessageSquare size={17} />}
                     />
                 </div>
             </div>
@@ -457,7 +546,7 @@ export default function MasterDashboard() {
                         Generated Leads Outreach
                     </h2>
                 </div>
-                <div className="metric-grid">
+                <div className="metric-grid-7">
                     <MetricTile
                         title="Total Generated Leads"
                         value={loading ? '—' : totalLeadsGen.toLocaleString()}
@@ -467,12 +556,29 @@ export default function MasterDashboard() {
                         icon={<Users size={17} />}
                     />
                     <MetricTile
+                        title="Emails Sent (Generated)"
+                        value="—"
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="var(--green)"
+                        icon={<Mail size={17} />}
+                        onClick={() => router.push('/dashboard/email/sent')}
+                    />
+                    <MetricTile
                         title="WA Reachouts (Generated)"
                         value={loading ? '—' : totalWaReachoutsGen.toLocaleString()}
                         trend="Real-time"
                         trendDir="neutral"
                         accentColor="var(--green)"
                         icon={<MessageCircle size={17} />}
+                    />
+                    <MetricTile
+                        title="SMS Reachouts (Generated)"
+                        value={loading ? '—' : smsOwnerReachouts.toLocaleString()}
+                        trend="Real-time"
+                        trendDir="neutral"
+                        accentColor="#EC4899"
+                        icon={<MessageSquare size={17} />}
                     />
                     <MetricTile
                         title="Voice Calls (Generated)"
@@ -484,12 +590,20 @@ export default function MasterDashboard() {
                         info="Derived from Vapi call logs for the generated leads account."
                     />
                     <MetricTile
-                        title="Replies (Generated)"
+                        title="WA Replies (Generated)"
                         value={loading ? '—' : totalWaRepliesGen.toLocaleString()}
                         trend={`${replyRateGen}% reply rate`}
                         trendDir="up"
                         accentColor="var(--purple)"
                         icon={<MessageCircle size={17} />}
+                    />
+                    <MetricTile
+                        title="SMS Replies (Generated)"
+                        value={loading ? '—' : smsOwnerReplies.toLocaleString()}
+                        trend={`${smsReplyRateGen}% reply rate`}
+                        trendDir="up"
+                        accentColor="#EC4899"
+                        icon={<MessageSquare size={17} />}
                     />
                 </div>
             </div>

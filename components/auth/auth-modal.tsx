@@ -52,14 +52,19 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'login' }: AuthModalP
 
                     {/* Logo */}
                     <div className="flex justify-center mb-8 relative">
-                        <div className="relative w-36 h-10">
-                            <Image
-                                src="/VE-Logo-Color.svg"
-                                alt="Victory Energy Logo"
-                                fill
-                                className="object-contain"
-                                priority
-                            />
+                        <div 
+                            className="relative flex items-center justify-center rounded-xl bg-white/95 px-3 py-1 shadow-sm border border-white/20 transition-all duration-200 hover:bg-white"
+                            style={{ height: '36px' }}
+                        >
+                            <div className="relative w-[110px] h-[24px]">
+                                <Image
+                                    src="/VE-Logo-Color.svg"
+                                    alt="Victory Energy Logo"
+                                    fill
+                                    className="object-contain"
+                                    priority
+                                />
+                            </div>
                         </div>
                     </div>
 

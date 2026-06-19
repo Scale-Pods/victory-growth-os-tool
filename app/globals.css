@@ -463,6 +463,20 @@
         .metric-tile .tile-value { font-size: 28px; }
     }
 
+    .tile-icon-wrapper {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .tile-icon-wrapper svg {
+        width: 17px !important;
+        height: 17px !important;
+    }
+
     /* ─── METRIC GRID (responsive tile layout) ─── */
     .metric-grid {
         display: grid;
@@ -474,11 +488,71 @@
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 14px;
     }
+    
+    /* ─── METRIC GRID 7 (Fits 7 columns in one row on desktop) ─── */
+    .metric-grid-7 {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+    }
+    
+    @media (max-width: 1366px) {
+        .metric-grid-7 {
+            gap: 8px;
+        }
+    }
+    
+    @media (max-width: 1200px) {
+        .metric-grid-7 {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .metric-grid-7 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
     @media (max-width: 480px) {
-        .metric-grid, .metric-grid-sm { grid-template-columns: 1fr; }
+        .metric-grid, .metric-grid-sm, .metric-grid-7 { grid-template-columns: 1fr; }
     }
     @media (min-width: 481px) and (max-width: 640px) {
         .metric-grid, .metric-grid-sm { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Smaller spacing and sizes inside metric-grid-7 on desktop to fit everything in one row */
+    @media (min-width: 1201px) {
+        .metric-grid-7 .metric-tile {
+            padding: 14px 16px;
+            border-radius: 16px;
+        }
+        
+        .metric-grid-7 .tile-icon-wrapper {
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 8px !important;
+        }
+        
+        .metric-grid-7 .tile-icon-wrapper svg {
+            width: 13px !important;
+            height: 13px !important;
+        }
+        
+        .metric-grid-7 .tile-label {
+            font-size: 11px;
+            line-height: 1.25;
+        }
+        
+        .metric-grid-7 .tile-value {
+            font-size: 22px;
+            margin: 6px 0 4px;
+        }
+        
+        .metric-grid-7 .tile-trend {
+            font-size: 10px;
+        }
     }
 
     /* ─── CHARTS GRID ─── */

@@ -46,8 +46,13 @@ export default function ResetPasswordPage() {
 
                 <div className="p-8 pt-12 space-y-8">
                     <div className="flex justify-center">
-                        <div className="relative w-40 h-10">
-                            <Image src="/VE-Logo-Color.svg" alt="Victory Energy" fill className="object-contain" priority />
+                        <div 
+                            className="relative flex items-center justify-center rounded-xl bg-white/95 px-3 py-1 shadow-sm border border-white/20 transition-all duration-200 hover:bg-white"
+                            style={{ height: '36px' }}
+                        >
+                            <div className="relative w-[110px] h-[24px]">
+                                <Image src="/VE-Logo-Color.svg" alt="Victory Energy" fill className="object-contain" priority />
+                            </div>
                         </div>
                     </div>
 
