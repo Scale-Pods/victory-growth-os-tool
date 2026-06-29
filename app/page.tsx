@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, Mail, MessageCircle, Mic } from "lucide-react";
+import { ArrowRight, Mail, MessageCircle, Mic, Sparkles, Users, TrendingUp, Building2 } from "lucide-react";
 import { AuthForms } from "@/components/auth/auth-forms";
 
 export default function LandingPage() {
@@ -11,12 +11,7 @@ export default function LandingPage() {
         <div
             className="min-h-screen overflow-hidden"
             style={{
-                backgroundColor: '#0A0A0F',
-                backgroundImage: `
-                    radial-gradient(ellipse 140% 70% at 15% -10%, rgba(88,86,214,0.22) 0%, transparent 55%),
-                    radial-gradient(ellipse 80% 60% at 85% 95%, rgba(10,132,255,0.16) 0%, transparent 50%),
-                    radial-gradient(ellipse 60% 45% at 50% 40%, rgba(48,209,88,0.06) 0%, transparent 50%)
-                `
+                backgroundColor: '#111111',
             }}
         >
             {/* ── Header ── */}
@@ -93,116 +88,101 @@ export default function LandingPage() {
             </header>
 
             {/* ── Hero ── */}
-            <main className="pt-32 pb-24 px-6">
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+            <section className="relative min-h-screen flex flex-col justify-center px-6 pt-16">
+                <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
                     {/* Left: Content */}
-                    <div className="flex-1 text-center lg:text-left">
+                    <div className="flex flex-col justify-center text-center lg:text-left">
                         {/* Pill */}
-                        <div
-                            className="inline-flex items-center gap-2 mb-8"
-                            style={{
-                                padding: '5px 14px',
-                                borderRadius: 9999,
-                                background: 'rgba(10,132,255,0.12)',
-                                border: '1px solid rgba(10,132,255,0.22)',
-                                fontSize: 11,
-                                fontWeight: 600,
-                                letterSpacing: '0.04em',
-                                textTransform: 'uppercase',
-                                color: '#40A0FF',
-                            }}
-                        >
-                            <span
+                        <div className="mb-6">
+                            <div
+                                className="inline-flex items-center gap-1.5"
                                 style={{
-                                    width: 6, height: 6, borderRadius: '50%',
-                                    background: '#0A84FF',
-                                    animation: 'pulse-live 2s ease-in-out infinite',
-                                    display: 'inline-block',
+                                    padding: '6px 16px',
+                                    borderRadius: 8,
+                                    background: 'rgba(139, 92, 246, 0.15)',
+                                    fontSize: 12,
+                                    fontWeight: 600,
+                                    color: '#A78BFA',
                                 }}
-                            />
-                            Business Automation Platform
+                            >
+                                <Sparkles size={14} /> AI-Powered Growth Automation Platform
+                            </div>
                         </div>
 
                         {/* Headline */}
                         <h1
-                            style={{
-                                fontSize: 'clamp(44px, 6vw, 72px)',
-                                fontWeight: 700,
-                                letterSpacing: '-0.03em',
-                                lineHeight: 1.05,
-                                color: 'rgba(255,255,255,0.96)',
-                                marginBottom: 24,
-                            }}
+                            className="text-4xl sm:text-5xl xl:text-6xl font-bold tracking-tight mb-6 leading-[1.08] text-white"
                         >
-                            Automate Your<br />
-                            <span style={{ color: '#0A84FF' }}>Business Growth</span>
+                            Automate Smarter with{" "}
+                            <span className="bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-400 bg-clip-text text-transparent">
+                                Victory Energy
+                            </span>{" "}
+                            Growth OS
                         </h1>
 
                         {/* Sub */}
                         <p
-                            style={{
-                                fontSize: 18,
-                                lineHeight: 1.6,
-                                color: 'rgba(255,255,255,0.46)',
-                                maxWidth: 520,
-                                margin: '0 auto 40px',
-                                fontWeight: 400,
-                                letterSpacing: '-0.011em',
-                            }}
-                            className="lg:mx-0"
+                            className="text-lg max-w-xl mb-10 leading-relaxed text-gray-400 mx-auto lg:mx-0"
                         >
-                        A complete suite of intelligent tools to capture leads and automate follow-ups.
-                        Manage every channel from one powerful dashboard.
-                    </p>
+                            A complete suite of intelligent tools to capture leads and automate follow-ups. Manage every channel from one powerful dashboard.
+                        </p>
 
-                        <div className="flex items-center gap-4 justify-center lg:justify-start">
-                            <div className="flex items-center -space-x-3">
-                                <div className="w-10 h-10 rounded-full border-2 border-[#0A0A0F] bg-gray-600 flex items-center justify-center text-xs font-bold text-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=J+D&background=0A84FF&color=fff" alt="User" width={40} height={40}/></div>
-                                <div className="w-10 h-10 rounded-full border-2 border-[#0A0A0F] bg-gray-500 flex items-center justify-center text-xs font-bold text-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=A+S&background=30D158&color=fff" alt="User" width={40} height={40}/></div>
-                                <div className="w-10 h-10 rounded-full border-2 border-[#0A0A0F] bg-gray-400 flex items-center justify-center text-xs font-bold text-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=M+R&background=FF9F0A&color=fff" alt="User" width={40} height={40}/></div>
-                            </div>
-                            <div className="text-sm font-medium text-white/60">
-                                Trusted by 500+ businesses
-                            </div>
+                        {/* Stats Row */}
+                        <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-6 mb-10">
+                            {[
+                                { icon: <Users size={20} color="#A78BFA" />, value: "10K+", label: "Leads Captured" },
+                                { icon: <TrendingUp size={20} color="#A78BFA" />, value: "85%", label: "Faster Growth" },
+                                { icon: <Building2 size={20} color="#A78BFA" />, value: "500+", label: "Campaigns Sent" },
+                            ].map((s, i) => (
+                                <div key={i} className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
+                                        {s.icon}
+                                    </div>
+                                    <div className="text-left">
+                                        <p className="text-[26px] font-light tracking-tight leading-none text-white">{s.value}</p>
+                                        <p className="text-xs text-gray-400 mt-1">{s.label}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* CTA button */}
+                        <div>
+                            <button
+                                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/5 border border-white/10 text-white font-medium hover:bg-white/10 transition-colors"
+                            >
+                                See Features <ArrowRight size={16} />
+                            </button>
                         </div>
                     </div>
 
                     {/* Right: Login Form */}
-                    <div id="login-form" className="w-full max-w-[420px] lg:w-[420px] flex-shrink-0">
+                    <div id="login-form" className="w-full lg:max-w-[480px] flex-shrink-0 mx-auto">
                         <div style={{
-                            background: 'rgba(28,28,30,0.60)',
-                            backdropFilter: 'blur(40px) saturate(180%)',
-                            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-                            borderRadius: 28,
+                            background: '#1C1C1E',
+                            borderRadius: 24,
                             padding: '40px 32px',
-                            boxShadow: '0 8px 32px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08)',
-                            outline: '1px solid rgba(255,255,255,0.08)',
-                            position: 'relative',
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.24)',
+                            border: '1px solid rgba(255,255,255,0.05)',
                         }}>
-                            {/* Ambient top glow */}
-                            <div
-                                style={{
-                                    position: 'absolute',
-                                    top: -40,
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    width: 200,
-                                    height: 100,
-                                    background: 'rgba(10,132,255,0.15)',
-                                    filter: 'blur(50px)',
-                                    borderRadius: '50%',
-                                    pointerEvents: 'none',
-                                }}
-                            />
+                            {/* Logo & Welcome text */}
+                            <div className="flex flex-col items-center pb-6 pt-2 text-center">
+                                <div className="bg-white rounded-xl px-6 py-3 mb-4 shadow-sm inline-block">
+                                    <Image src="/VE-Logo-Color.svg" alt="Victory Energy" width={110} height={24} className="h-7 w-auto object-contain" />
+                                </div>
+                                <h2 className="text-[19px] font-semibold text-white tracking-tight mb-1">Welcome back</h2>
+                                <p className="text-[13px] text-gray-400">Sign in to your account to continue</p>
+                            </div>
                             <AuthForms defaultMode="login" />
                         </div>
                     </div>
                 </div>
+            </section>
 
-                {/* ── Feature Cards ── */}
-                <div
-                    className="max-w-5xl mx-auto mt-28 grid grid-cols-1 md:grid-cols-3 gap-5"
-                >
+            {/* ── Feature Cards ── */}
+            <section id="features" className="py-24 px-6">
+                <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
                     {[
                         {
                             icon: <Mail size={22} />,
@@ -294,32 +274,7 @@ export default function LandingPage() {
                         </div>
                     ))}
                 </div>
-
-                {/* ── Stats Strip ── */}
-                <div
-                    className="max-w-4xl mx-auto mt-20 grid grid-cols-3 gap-6"
-                >
-                    {[
-                        { value: '3 Channels', label: 'Email · WhatsApp · Voice' },
-                        { value: 'Real-time', label: 'Live metrics dashboard' },
-                        { value: 'AI-Powered', label: 'Intelligent automation' },
-                    ].map((stat, i) => (
-                        <div
-                            key={i}
-                            style={{ textAlign: 'center', padding: '24px 20px' }}
-                        >
-                            <div style={{ fontSize: 22, fontWeight: 600, letterSpacing: '-0.025em', color: 'rgba(255,255,255,0.88)', marginBottom: 6 }}>
-                                {stat.value}
-                            </div>
-                            <div style={{ fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.36)', letterSpacing: '-0.01em' }}>
-                                {stat.label}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </main>
-
-
+            </section>
         </div>
     );
 }
