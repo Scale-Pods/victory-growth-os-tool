@@ -3,10 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, Mail, MessageCircle, Mic } from "lucide-react";
-import { AuthModal } from "@/components/auth/auth-modal";
+import { AuthForms } from "@/components/auth/auth-forms";
 
 export default function LandingPage() {
-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
     return (
         <div
@@ -49,7 +48,7 @@ export default function LandingPage() {
 
                     <div className="flex items-center gap-2">
                         <button
-                            onClick={() => setIsAuthModalOpen(true)}
+                            onClick={() => document.getElementById('login-form')?.scrollIntoView({ behavior: 'smooth' })}
                             style={{
                                 padding: '8px 16px',
                                 borderRadius: 10,
@@ -58,7 +57,7 @@ export default function LandingPage() {
                                 color: 'rgba(255,255,255,0.60)',
                                 background: 'transparent',
                                 border: 'none',
-                                cursor: 'default',
+                                cursor: 'pointer',
                                 letterSpacing: '-0.01em',
                                 transition: 'color 130ms ease',
                             }}
@@ -68,7 +67,7 @@ export default function LandingPage() {
                             Sign In
                         </button>
                         <button
-                            onClick={() => setIsAuthModalOpen(true)}
+                            onClick={() => document.getElementById('login-form')?.scrollIntoView({ behavior: 'smooth' })}
                             style={{
                                 padding: '9px 20px',
                                 borderRadius: 10,
@@ -77,7 +76,7 @@ export default function LandingPage() {
                                 color: '#ffffff',
                                 background: 'var(--blue, #0A84FF)',
                                 border: 'none',
-                                cursor: 'default',
+                                cursor: 'pointer',
                                 letterSpacing: '-0.01em',
                                 transition: 'opacity 150ms ease, transform 100ms ease',
                                 boxShadow: '0 2px 8px rgba(10,132,255,0.35)',
@@ -94,93 +93,110 @@ export default function LandingPage() {
             </header>
 
             {/* ── Hero ── */}
-            <main className="pt-40 pb-24 px-6">
-                <div className="max-w-5xl mx-auto text-center">
-
-                    {/* Pill */}
-                    <div
-                        className="inline-flex items-center gap-2 mb-8"
-                        style={{
-                            padding: '5px 14px',
-                            borderRadius: 9999,
-                            background: 'rgba(10,132,255,0.12)',
-                            border: '1px solid rgba(10,132,255,0.22)',
-                            fontSize: 11,
-                            fontWeight: 600,
-                            letterSpacing: '0.04em',
-                            textTransform: 'uppercase',
-                            color: '#40A0FF',
-                        }}
-                    >
-                        <span
+            <main className="pt-32 pb-24 px-6">
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+                    {/* Left: Content */}
+                    <div className="flex-1 text-center lg:text-left">
+                        {/* Pill */}
+                        <div
+                            className="inline-flex items-center gap-2 mb-8"
                             style={{
-                                width: 6, height: 6, borderRadius: '50%',
-                                background: '#0A84FF',
-                                animation: 'pulse-live 2s ease-in-out infinite',
-                                display: 'inline-block',
+                                padding: '5px 14px',
+                                borderRadius: 9999,
+                                background: 'rgba(10,132,255,0.12)',
+                                border: '1px solid rgba(10,132,255,0.22)',
+                                fontSize: 11,
+                                fontWeight: 600,
+                                letterSpacing: '0.04em',
+                                textTransform: 'uppercase',
+                                color: '#40A0FF',
                             }}
-                        />
-                        Business Automation Platform
-                    </div>
+                        >
+                            <span
+                                style={{
+                                    width: 6, height: 6, borderRadius: '50%',
+                                    background: '#0A84FF',
+                                    animation: 'pulse-live 2s ease-in-out infinite',
+                                    display: 'inline-block',
+                                }}
+                            />
+                            Business Automation Platform
+                        </div>
 
-                    {/* Headline */}
-                    <h1
-                        style={{
-                            fontSize: 'clamp(44px, 7vw, 80px)',
-                            fontWeight: 700,
-                            letterSpacing: '-0.03em',
-                            lineHeight: 1.05,
-                            color: 'rgba(255,255,255,0.96)',
-                            marginBottom: 24,
-                        }}
-                    >
-                        Automate Your<br />
-                        <span style={{ color: '#0A84FF' }}>Business Growth</span>
-                    </h1>
+                        {/* Headline */}
+                        <h1
+                            style={{
+                                fontSize: 'clamp(44px, 6vw, 72px)',
+                                fontWeight: 700,
+                                letterSpacing: '-0.03em',
+                                lineHeight: 1.05,
+                                color: 'rgba(255,255,255,0.96)',
+                                marginBottom: 24,
+                            }}
+                        >
+                            Automate Your<br />
+                            <span style={{ color: '#0A84FF' }}>Business Growth</span>
+                        </h1>
 
-                    {/* Sub */}
-                    <p
-                        style={{
-                            fontSize: 18,
-                            lineHeight: 1.6,
-                            color: 'rgba(255,255,255,0.46)',
-                            maxWidth: 560,
-                            margin: '0 auto 48px',
-                            fontWeight: 400,
-                            letterSpacing: '-0.011em',
-                        }}
-                    >
+                        {/* Sub */}
+                        <p
+                            style={{
+                                fontSize: 18,
+                                lineHeight: 1.6,
+                                color: 'rgba(255,255,255,0.46)',
+                                maxWidth: 520,
+                                margin: '0 auto 40px',
+                                fontWeight: 400,
+                                letterSpacing: '-0.011em',
+                            }}
+                            className="lg:mx-0"
+                        >
                         A complete suite of intelligent tools to capture leads and automate follow-ups.
                         Manage every channel from one powerful dashboard.
                     </p>
 
-                    {/* CTA */}
-                    <button
-                        onClick={() => setIsAuthModalOpen(true)}
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 8,
-                            padding: '14px 32px',
-                            borderRadius: 14,
-                            fontSize: 16,
-                            fontWeight: 600,
-                            color: '#ffffff',
-                            background: 'var(--blue, #0A84FF)',
-                            border: 'none',
-                            cursor: 'default',
-                            letterSpacing: '-0.01em',
-                            boxShadow: '0 4px 16px rgba(10,132,255,0.40), 0 0 0 1px rgba(10,132,255,0.20)',
-                            transition: 'opacity 150ms ease, transform 100ms ease',
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
-                        onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-                        onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
-                        onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
-                    >
-                        Get Started Now
-                        <ArrowRight size={16} />
-                    </button>
+                        <div className="flex items-center gap-4 justify-center lg:justify-start">
+                            <div className="flex items-center -space-x-3">
+                                <div className="w-10 h-10 rounded-full border-2 border-[#0A0A0F] bg-gray-600 flex items-center justify-center text-xs font-bold text-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=J+D&background=0A84FF&color=fff" alt="User" width={40} height={40}/></div>
+                                <div className="w-10 h-10 rounded-full border-2 border-[#0A0A0F] bg-gray-500 flex items-center justify-center text-xs font-bold text-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=A+S&background=30D158&color=fff" alt="User" width={40} height={40}/></div>
+                                <div className="w-10 h-10 rounded-full border-2 border-[#0A0A0F] bg-gray-400 flex items-center justify-center text-xs font-bold text-white overflow-hidden"><img src="https://ui-avatars.com/api/?name=M+R&background=FF9F0A&color=fff" alt="User" width={40} height={40}/></div>
+                            </div>
+                            <div className="text-sm font-medium text-white/60">
+                                Trusted by 500+ businesses
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right: Login Form */}
+                    <div id="login-form" className="w-full max-w-[420px] lg:w-[420px] flex-shrink-0">
+                        <div style={{
+                            background: 'rgba(28,28,30,0.60)',
+                            backdropFilter: 'blur(40px) saturate(180%)',
+                            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+                            borderRadius: 28,
+                            padding: '40px 32px',
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.08)',
+                            outline: '1px solid rgba(255,255,255,0.08)',
+                            position: 'relative',
+                        }}>
+                            {/* Ambient top glow */}
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    top: -40,
+                                    left: '50%',
+                                    transform: 'translateX(-50%)',
+                                    width: 200,
+                                    height: 100,
+                                    background: 'rgba(10,132,255,0.15)',
+                                    filter: 'blur(50px)',
+                                    borderRadius: '50%',
+                                    pointerEvents: 'none',
+                                }}
+                            />
+                            <AuthForms defaultMode="login" />
+                        </div>
+                    </div>
                 </div>
 
                 {/* ── Feature Cards ── */}
@@ -303,12 +319,7 @@ export default function LandingPage() {
                 </div>
             </main>
 
-            {/* ── Auth Modal ── */}
-            <AuthModal
-                isOpen={isAuthModalOpen}
-                onClose={() => setIsAuthModalOpen(false)}
-                defaultMode="login"
-            />
+
         </div>
     );
 }

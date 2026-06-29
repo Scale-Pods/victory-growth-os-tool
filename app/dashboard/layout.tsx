@@ -355,7 +355,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                     </button>
 
                     <button
-                        onClick={async () => { await logout(); router.push('/'); router.refresh(); }}
+                        onClick={async () => { await logout(); window.location.href = 'https://victory-energy-automations.vercel.app/'; }}
                         style={{
                             display: 'flex', alignItems: 'center', gap: 12,
                             padding: '10px 12px', borderRadius: '12px',
